@@ -8,6 +8,8 @@ const Performance = styled.div`
 
 const Stat = styled.div`
     white-space: nowrap;
+    align-items: center;
+    text-align: center;
     font-size: 12px;
     padding: 2px 2px 2px 2px;
     border: 2px solid gray;

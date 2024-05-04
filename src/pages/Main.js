@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes, css } from "styled-components";
 
 import { ReactComponent as Logo } from "../assets/svg/logo.svg";
 
@@ -13,6 +13,24 @@ import { ReactComponent as Right } from "../assets/svg/angle-right.svg";
 import { ReactComponent as Reload } from "../assets/svg/rotate-right.svg";
 
 import { ReactComponent as Setting } from "../assets/svg/settings.svg";
+
+const rotateAnimation = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`;
+
+const slideInFromRight = keyframes`
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+`;
 
 const MainHeader = styled.header`
     font-size: 24px;
@@ -57,10 +75,11 @@ const MenuIcon = styled.span`
 
 const RightMenu = styled.section`
     background-color: whitesmoke;
-    box-shadow: 10px 0px 10px 5px;
+    box-shadow: 10px 0px 10px 5px rgba(0, 0, 0, 0.5);
     border: none;
-    width: 600px;
+    width: 400px;
     height: 100vh;
+    animation: ${slideInFromRight} 0.3s ease-out forwards;
 `;
 
 const Burger = styled(Setting)`
@@ -87,6 +106,15 @@ const LogoStyle = styled(Logo)`
     margin-right: 10px;
 `;
 
+const ConditionalRotatingReload = styled(Reload)`
+    animation: ${(props) =>
+        props.isLoading
+            ? css`
+                  ${rotateAnimation} 0.5s linear
+              `
+            : "none"};
+`;
+
 export function Main() {
     const [totalTime, setTotalTime] = useState(null);
     const [cpm, setCpm] = useState(0);
@@ -96,10 +124,13 @@ export function Main() {
     const [resultOpen, setResultOpen] = useState(false);
     const [reloadKey, setReloadKey] = useState(0);
     const [reload, setReload] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const [result, setResult] = useState([]);
 
     function handleReload() {
+        setIsLoading(true);
+        setTimeout(() => setIsLoading(false), 500);
         setReloadKey((prevKey) => prevKey + 1);
         setCpm(0);
         setAcc(0);
@@ -142,11 +173,12 @@ export function Main() {
                             />
                             <MenuIcons>
                                 <MenuIcon onClick={handleReload}>
-                                    <Reload
+                                    <ConditionalRotatingReload
                                         aria-label="다시하기"
                                         width="15px"
                                         height="20px"
                                         fill="gray"
+                                        isLoading={isLoading}
                                     />
                                 </MenuIcon>
                                 <MenuIcon>
@@ -175,27 +207,31 @@ export function Main() {
                                 </MenuIcon>
                             </MenuIcons>
                         </MenuBar>
-                        <TypingArea
-                            key={reloadKey}
-                            setAcc={setAcc}
-                            setErr={setErr}
-                            setCpm={setCpm}
-                            totalTime={totalTime}
-                            setTotalTime={setTotalTime}
-                            reload={reload}
-                            setReload={setReload}
-                            setResultOpen={setResultOpen}
-                            setResult={setResult}
-                        />
+                        {!isLoading && (
+                            <TypingArea
+                                key={reloadKey}
+                                setAcc={setAcc}
+                                setErr={setErr}
+                                setCpm={setCpm}
+                                totalTime={totalTime}
+                                setTotalTime={setTotalTime}
+                                reload={reload}
+                                setReload={setReload}
+                                setResultOpen={setResultOpen}
+                                setResult={setResult}
+                            />
+                        )}
                     </MainBody>
                 </section>
                 <footer>
-                    <TextInfo
-                        title="나의 일기"
-                        link="https://github.com/seokkkkkk"
-                        author="정윤석"
-                        uploader="yundol"
-                    />
+                    {!isLoading && (
+                        <TextInfo
+                            title="나의 일기"
+                            link="https://github.com/seokkkkkk"
+                            author="정윤석"
+                            uploader="yundol"
+                        />
+                    )}
                 </footer>
             </div>
             {!menuOpen && <Burger onClick={() => setMenuOpen(true)} />}
