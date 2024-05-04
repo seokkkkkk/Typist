@@ -1,6 +1,8 @@
 import { useState } from "react";
 import styled from "styled-components";
 
+import { ReactComponent as Logo } from "../assets/svg/logo.svg";
+
 import { TextInfo } from "../components/TextInfo";
 import { Status } from "../components/Status";
 import { TypingArea } from "../components/TypingArea";
@@ -52,6 +54,38 @@ const MenuIcon = styled.span`
     width: 20px;
 `;
 
+const RightMenu = styled.section`
+    background-color: whitesmoke;
+    box-shadow: 10px 0px 10px 5px;
+    border: none;
+    width: 600px;
+    height: 100vh;
+`;
+
+const Burger = styled(MenuBurger)`
+    width: 30px;
+    height: 30px;
+    fill: gray;
+    position: absolute;
+    bottom: 42px;
+    right: 40px;
+    cursor: pointer;
+    z-index: 10;
+`;
+
+const MainLogo = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    margin-right: 40px;
+`;
+
+const LogoStyle = styled(Logo)`
+    margin-top: 35px;
+    margin-right: 10px;
+`;
+
 export function Main() {
     const [totalTime, setTotalTime] = useState(null);
     const [cpm, setCpm] = useState(0);
@@ -73,7 +107,10 @@ export function Main() {
     return (
         <MainPage>
             <div onClick={() => setMenuOpen(false)}>
-                <MainHeader>Typist</MainHeader>
+                <MainLogo>
+                    <LogoStyle width="30px" height="30px" />
+                    <MainHeader>Typist</MainHeader>
+                </MainLogo>
                 <section>
                     <MainBody>
                         <MenuBar>
@@ -155,21 +192,3 @@ export function Main() {
         </MainPage>
     );
 }
-
-const RightMenu = styled.section`
-    background-color: whitesmoke;
-    box-shadow: 10px 0px 10px 5px;
-    border: none;
-    width: 600px;
-    height: 100vh;
-`;
-const Burger = styled(MenuBurger)`
-    width: 30px;
-    height: 30px;
-    fill: gray;
-    position: absolute;
-    bottom: 42px;
-    right: 40px;
-    cursor: pointer;
-    z-index: 10;
-`;
