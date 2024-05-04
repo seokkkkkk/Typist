@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const TypingWords = styled.div`
     position: absolute;
-    top: 158.5px;
+    top: 178.5px;
     margin-right: 30px;
 `;
 
@@ -45,6 +45,8 @@ function InputText({
     setTotalTime,
     reload,
     setReload,
+    setResultOpen,
+    setResult,
 }) {
     const [input, setInput] = useState("");
     const [letters, setLetters] = useState([]);
@@ -83,12 +85,23 @@ function InputText({
         }
     }, [totalTime, totalCh, correct, letters.length, setAcc, setCpm, setErr]);
 
-    if (reload) {
-        clearInterval(timerRef.current);
-        setReload(false);
-    }
-
     const origin = text.split("");
+
+    useEffect(() => {
+        if (reload) {
+            clearInterval(timerRef.current);
+            setReload(false);
+        }
+    }, [reload, setReload]);
+
+    useEffect(() => {
+        if (letters.length === origin.length) {
+            setResult([letters.length, totalCh]);
+            clearInterval(timerRef.current);
+            setResultOpen(true);
+            setReload(true);
+        }
+    }, [letters, origin, setResultOpen, setReload]);
 
     const handleChange = (e) => {
         const inputValue = e.target.value;
@@ -174,7 +187,6 @@ function InputText({
                 value={input}
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
-                autoFocus
             />
         </TypingWords>
     );

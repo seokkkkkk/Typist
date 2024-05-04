@@ -19,11 +19,12 @@ function TypingArea({
     setTotalTime,
     reload,
     setReload,
+    setResultOpen,
+    setResult,
 }) {
     const [index, setIndex] = useState(0);
     const [isInput, setIsInput] = useState(false);
-    const text =
-        "저는 정윤석 입니다. 안녕하세요 저는 정윤석 입니다. 안녕하세요 저는 정윤석 입니다. 안녕하세요 저는 정윤석 입니다. 안녕하세요 저는 정윤석 입니다. 안녕하세요 저는 정윤석 입니다. 안녕하세요 저는 정윤석 입니다. 안녕하세요 저는 정윤석 입니다. ";
+    const text = "정윤석";
     const inputRef = useRef(null);
 
     return (
@@ -41,6 +42,8 @@ function TypingArea({
                 setTotalTime={setTotalTime}
                 reload={reload}
                 setReload={setReload}
+                setResultOpen={setResultOpen}
+                setResult={setResult}
             />
             <GivenText text={text} index={index} isInput={isInput} />
         </TextArea>

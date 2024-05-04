@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { ReactComponent as Logo } from "../assets/svg/logo.svg";
@@ -7,12 +7,12 @@ import { TextInfo } from "../components/TextInfo";
 import { Status } from "../components/Status";
 import { TypingArea } from "../components/TypingArea";
 
-import { ReactComponent as MenuBurger } from "../assets/svg/menu-burger.svg";
-
+import { ReactComponent as List } from "../assets/svg/menu-burger.svg";
 import { ReactComponent as Left } from "../assets/svg/angle-left.svg";
 import { ReactComponent as Right } from "../assets/svg/angle-right.svg";
-import { ReactComponent as Select } from "../assets/svg/list.svg";
 import { ReactComponent as Reload } from "../assets/svg/rotate-right.svg";
+
+import { ReactComponent as Setting } from "../assets/svg/settings.svg";
 
 const MainHeader = styled.header`
     font-size: 24px;
@@ -32,6 +32,7 @@ const MainBody = styled.div`
 const MainPage = styled.div`
     display: flex;
     flex-direction: row;
+    width: 100%;
 `;
 
 const MenuBar = styled.div`
@@ -62,7 +63,7 @@ const RightMenu = styled.section`
     height: 100vh;
 `;
 
-const Burger = styled(MenuBurger)`
+const Burger = styled(Setting)`
     width: 30px;
     height: 30px;
     fill: gray;
@@ -92,8 +93,11 @@ export function Main() {
     const [acc, setAcc] = useState(0);
     const [err, setErr] = useState(0);
     const [menuOpen, setMenuOpen] = useState(false);
+    const [resultOpen, setResultOpen] = useState(false);
     const [reloadKey, setReloadKey] = useState(0);
     const [reload, setReload] = useState(false);
+
+    const [result, setResult] = useState([]);
 
     function handleReload() {
         setReloadKey((prevKey) => prevKey + 1);
@@ -104,9 +108,25 @@ export function Main() {
         setReload(true);
     }
 
+    function handleCloseResult() {
+        setResultOpen(false);
+        setResult([]);
+    }
+    useEffect(() => {
+        if (resultOpen) {
+            setResult([...result, cpm, acc, err, totalTime]);
+        }
+    }, [resultOpen]);
+
+    useEffect(() => {
+        if (reload) {
+            handleReload();
+        }
+    }, [reload]);
+
     return (
         <MainPage>
-            <div onClick={() => setMenuOpen(false)}>
+            <div onClick={() => setMenuOpen(false)} style={{ width: "100%" }}>
                 <MainLogo>
                     <LogoStyle width="30px" height="30px" />
                     <MainHeader>Typist</MainHeader>
@@ -146,7 +166,7 @@ export function Main() {
                                     />
                                 </MenuIcon>
                                 <MenuIcon>
-                                    <Select
+                                    <List
                                         aria-label="글 목록"
                                         width="20px"
                                         height="20px"
@@ -164,6 +184,8 @@ export function Main() {
                             setTotalTime={setTotalTime}
                             reload={reload}
                             setReload={setReload}
+                            setResultOpen={setResultOpen}
+                            setResult={setResult}
                         />
                     </MainBody>
                 </section>
@@ -189,6 +211,43 @@ export function Main() {
                     <div></div>
                 </RightMenu>
             )}
+            {resultOpen && (
+                <ResultModal onClick={() => handleCloseResult()}>
+                    <ResultBody>
+                        <div>x</div>
+                        <div>정윤석</div>
+                        <div>자소: {result[0]}</div>
+                        <div>음절: {result[1]}</div>
+                        <div>CPM: {result[2]}</div>
+                        <div>ACC: {result[3]}%</div>
+                        <div>TIME: {result[4]}초</div>
+                        <div>제목</div>
+                        <div>저자</div>
+                        <div>업로더</div>
+                        <div>날짜</div>
+                    </ResultBody>
+                </ResultModal>
+            )}
         </MainPage>
     );
 }
+
+const ResultModal = styled.div`
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+`;
+
+const ResultBody = styled.div`
+    position: absolute;
+    width: 450px;
+    height: 600px;
+    background-color: white;
+    top: 50%; /* 상위 컨테이너 기준으로 50% 위치에 요소의 상단이 오도록 설정 */
+    left: 50%; /* 상위 컨테이너 기준으로 50% 위치에 요소의 왼쪽이 오도록 설정 */
+    transform: translate(
+        -50%,
+        -50%
+    ); /* 요소의 크기에 따라 상단과 왼쪽으로 50%씩 이동하여 중앙에 정확히 위치시킴 */
+`;
