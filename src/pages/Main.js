@@ -28,9 +28,11 @@ const MainBody = styled.div`
 `;
 
 const MainPage = styled.div`
+    position: relative;
     display: flex;
     flex-direction: row;
     width: 100%;
+    height: 100vh;
 `;
 
 const SettingIcon = styled(Setting)`
@@ -101,11 +103,43 @@ export function Main() {
         },
         {
             title: "나의 일기",
+            author: "정윤석",
+            uploader: "yundol",
+            link: "https://github.com/seokkkkkk",
+            text: "오늘은 날씨가 좋다.",
+            id: 1,
+        },
+        {
+            title: "나의 일기",
+            author: "정윤석",
+            uploader: "yundol",
+            link: "https://github.com/seokkkkkk",
+            text: "오늘은 날씨가 좋다.",
+            id: 1,
+        },
+        {
+            title: "나의 일기",
             author: "정희경",
             uploader: "yundol",
             link: "https://github.com/seokkkkkk",
             text: "오늘은 날씨가 덥다.",
             id: 3,
+        },
+        {
+            title: "나의 일기",
+            author: "정윤석",
+            uploader: "yundol",
+            link: "https://github.com/seokkkkkk",
+            text: "오늘은 날씨가 좋다.",
+            id: 1,
+        },
+        {
+            title: "나의 일기",
+            author: "정윤석",
+            uploader: "yundol",
+            link: "https://github.com/seokkkkkk",
+            text: "오늘은 날씨가 좋다.",
+            id: 1,
         },
     ]);
     const [currentText, setCurrentText] = useState(texts[0]);
@@ -285,7 +319,7 @@ export function Main() {
                     setIsLike={setIsLike}
                     isLike={isLike}
                     handleCloseResult={handleCloseResult}
-                    id={currentText.id}
+                    textInfo={currentText}
                 />
             )}
             {

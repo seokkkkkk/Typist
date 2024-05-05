@@ -34,15 +34,16 @@ const TextTitle = styled(BottomText)`
 `;
 
 const BottomMenuBody = styled.div`
-    gap: 30px;
+    gap: 10px;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: start;
     overflow-y: auto;
     margin: 20px 40px 0 40px;
     padding: 10px;
-    height: 100%;
+    height: 60%;
+    width: 100%;
 
     // Webkit 브라우저용 (Chrome, Safari 등)
     &::-webkit-scrollbar {
@@ -62,7 +63,7 @@ const BottomTextCell = styled.div`
     align-items: center;
     flex-direction: column;
     background-color: ${(props) => (props.$isSelected ? "#f0f0f0" : "white")};
-    box-shadow: 5px 5px 5px 5px #bebebe, -5px -5px 10px #ffffff;
+    box-shadow: 2px 2px 5px 2px #bebebe, -5px -5px 10px #ffffff;
     border-radius: 10px;
     width: 30%;
     height: 80px;
@@ -86,16 +87,17 @@ const BottomMenuTitle = styled.div`
 `;
 
 const BottomMenu = styled.div`
+    position: absolute;
+    max-width: 1000px;
     animation: ${(props) =>
             props.$isVisible ? slideInFromBottom : slideOutToBottom}
         0.3s ease-out forwards;
-    position: fixed;
-    bottom: 0;
     width: 100%;
+    height: 30%;
+    bottom: 0;
     background-color: white;
     border-top: 1px solid lightgray;
     z-index: 10;
-    height: 40%;
 `;
 
 export function MainBottomMenu({

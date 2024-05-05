@@ -1,0 +1,14 @@
+/* App.css */
+body {
+    padding: 0;
+    box-sizing: border-box;
+    min-width: 720px;
+}
+
+@media (min-width: 1001px) {
+    .app-container {
+        margin: 0 auto; /* 가운데 정렬 */
+        max-width: 1000px; /* 최대 너비 설정 */
+        padding: 0 20px; /* 좌우 패딩 추가 */
+    }
+}

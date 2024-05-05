@@ -12,7 +12,7 @@ import { NoDataCard } from "./NoDataCard";
 
 const MenuContainer = styled.section`
     background-color: whitesmoke;
-    box-shadow: 10px 0px 10px 5px rgba(0, 0, 0, 0.5);
+    box-shadow: -10px 0px 10px -10px rgba(0, 0, 0, 0.5);
     border: none;
     width: 400px;
     height: 100vh;

@@ -80,8 +80,9 @@ const ResultTitle = styled.div`
 `;
 
 const ResultContainer = styled.div`
-    position: fixed;
-    width: 100%;
+    position: absolute;
+    left: -50%;
+    width: 200%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.3);
 `;
@@ -102,6 +103,7 @@ export function ResultModal({
     result,
     setIsLike,
     isLike,
+    textInfo,
 }) {
     function saveResultToCookie(result) {
         let prevResult = getCookie("result");
@@ -323,10 +325,10 @@ export function ResultModal({
                     </LineChart>
                 </ResponsiveContainer>
                 <TextInfo
-                    title="나의 일기"
-                    link="https://github.com/seokkkkkk"
-                    author="정윤석"
-                    uploader="yundol"
+                    title={textInfo.title}
+                    link={textInfo.link}
+                    author={textInfo.author}
+                    uploader={textInfo.uploader}
                 />
                 <ResultButtons>
                     <Button
