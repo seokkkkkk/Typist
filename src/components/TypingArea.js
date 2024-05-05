@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { GivenText } from "../components/GivenText";
 import { InputText } from "../components/InputText";
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 const TextArea = styled.span`
     width: 100%;
@@ -23,10 +23,10 @@ function TypingArea({
     setResult,
     setData,
     text,
+    inputRef,
 }) {
     const [index, setIndex] = useState(0);
     const [isInput, setIsInput] = useState(false);
-    const inputRef = useRef(null);
 
     return (
         <TextArea onClick={() => inputRef.current.focus()}>

@@ -19,8 +19,9 @@ import {
 import { ChartDotSquare, ChartDotTriangle } from "./CustomDot";
 import { CustomTooltip } from "./CustomTooltip";
 import { TextInfo } from "./TextInfo";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import html2canvas from "html2canvas";
+import { getCookie, setCookie } from "../utils/TypistCookie";
 
 const Button = styled.button`
     border: none;
@@ -102,6 +103,33 @@ export function ResultModal({
     setIsLike,
     isLike,
 }) {
+    function saveResultToCookie(result) {
+        let prevResult = getCookie("result");
+        if (!prevResult) prevResult = [];
+        const resultData = {
+            totalInput: result[0],
+            syllable: result[1],
+            cpm: result[2],
+            acc: result[3],
+            err: result[4],
+            time: result[5],
+            id: result[6],
+            title: result[7],
+            author: result[8],
+            dates: new Date().toLocaleDateString(),
+        };
+
+        // 새 결과 추가 전에 배열의 크기를 확인하고, 30개 이상이면 가장 오래된 결과 제거
+        if (prevResult.length >= 30) {
+            prevResult.shift(); // 배열의 첫 번째 요소 제거 (가장 오래된 결과)
+        }
+
+        // 새 결과를 배열에 추가하고 쿠키 업데이트
+        setCookie("result", JSON.stringify([...prevResult, resultData]));
+    }
+    useEffect(() => {
+        saveResultToCookie(result);
+    }, [result]);
     const yAxisTicks = useMemo(() => {
         const maxCpm = Math.max(...data.map((item) => item.cpm));
         const minCpm = Math.min(...data.map((item) => item.cpm));
@@ -139,9 +167,19 @@ export function ResultModal({
             console.log("Share API not supported.");
         }
     };
-
+    function handleKeyDown(e) {
+        if (e.key === "Escape") {
+            handleCloseResult();
+        }
+    }
+    useEffect(() => {
+        const modal = document.getElementById("result");
+        if (modal) {
+            modal.focus();
+        }
+    }, []);
     return (
-        <ResultContainer>
+        <ResultContainer onKeyDown={handleKeyDown} tabIndex="0" id="result">
             <ResultBox id="resultBox">
                 <Button onClick={() => handleCloseResult()} name="back-button">
                     <Back

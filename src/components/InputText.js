@@ -18,7 +18,7 @@ const InputChar = styled.input`
     width: 17px;
     display: inline-block;
     animation: ${(props) =>
-        props.isError
+        props.$isError
             ? css`
                   ${shakeAnimation} 0.5s ease
               `
@@ -235,7 +235,7 @@ function InputText({
                 value={input}
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
-                isError={isError}
+                $isError={isError}
             />
         </TypingWords>
     );

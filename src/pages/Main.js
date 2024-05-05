@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { TextInfo } from "../components/TextInfo";
 import { TypingArea } from "../components/TypingArea";
@@ -10,6 +10,7 @@ import { ReactComponent as Logo } from "../assets/svg/logo.svg";
 import { ReactComponent as Setting } from "../assets/svg/settings.svg";
 import { MainBottomMenu } from "../components/MainBottomMenu";
 import { getCookie, setCookie } from "../utils/TypistCookie";
+import { EndOfText } from "../components/EndAlert";
 
 const MainHeader = styled.header`
     font-size: 24px;
@@ -56,6 +57,12 @@ const LogoStyle = styled(Logo)`
     margin-right: 10px;
 `;
 
+const PageContainer = styled.div`
+    position: fixed;
+    height: 100%;
+    width: 100%;
+`;
+
 export function Main() {
     const [isLike, setIsLike] = useState(false);
     const [totalTime, setTotalTime] = useState(null);
@@ -70,6 +77,8 @@ export function Main() {
     const [reload, setReload] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [result, setResult] = useState([]);
+    const inputRef = useRef(null);
+    const [openAlert, setOpenAlert] = useState(false);
     const [data, setData] = useState([
         { time: "00:00", cpm: 0, acc: 100, err: 0 },
     ]);
@@ -108,6 +117,7 @@ export function Main() {
 
     function handleReload() {
         setIsLoading(true);
+        setOpenAlert(false);
         setTimeout(() => setIsLoading(false), 500);
         setReloadKey((prevKey) => prevKey + 1);
         setCpm(0);
@@ -121,6 +131,9 @@ export function Main() {
         setResultModal(false);
         setResult([]);
         setData([{ time: "00:00", cpm: 0, acc: 100, err: 0 }]);
+        if (texts.length > currentTextIndex + 1)
+            setCurrentTextIndex(currentTextIndex + 1);
+        else setOpenAlert(true);
     }
 
     useEffect(() => {
@@ -131,11 +144,14 @@ export function Main() {
                 acc,
                 err,
                 totalTime,
+                currentText.id,
+                currentText.title,
+                currentText.author,
             ]);
             handleReload();
             setResultReady(false);
         }
-    }, [resultReady, cpm, acc, err, totalTime, result, data]);
+    }, [resultReady, cpm, acc, err, totalTime, result, data, currentText]);
 
     useEffect(() => {
         if (!resultReady && result.length > 5) {
@@ -238,6 +254,7 @@ export function Main() {
                                 setResult={setResult}
                                 setData={setData}
                                 text={currentText.text}
+                                inputRef={inputRef}
                             />
                         )}
                     </MainBody>
@@ -280,12 +297,7 @@ export function Main() {
                     />
                 </>
             }
+            {openAlert && <EndOfText setOpenAlert={setOpenAlert} />}
         </MainPage>
     );
 }
-
-const PageContainer = styled.div`
-    position: fixed;
-    height: 100%;
-    width: 100%;
-`;

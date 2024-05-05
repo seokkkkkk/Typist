@@ -6,6 +6,9 @@ import { ReactComponent as UserEdit } from "../assets/svg/settings.svg";
 import { ReactComponent as Bell } from "../assets/svg/bell.svg";
 import { StatusCard } from "./StatusCard";
 import { Developer } from "./Developer";
+import { getCookie } from "../utils/TypistCookie";
+import { useEffect, useState } from "react";
+import { NoDataCard } from "./NoDataCard";
 
 const MenuContainer = styled.section`
     background-color: whitesmoke;
@@ -160,13 +163,61 @@ function Notification({ number }) {
 }
 
 export function RightMenu() {
+    const [average, setAverage] = useState({
+        cpm: 0,
+        acc: 0,
+        err: 0,
+    });
+    const [best, setBest] = useState(null);
+    const [resent, setResent] = useState([]);
+
+    function calculateResult() {
+        const results = getCookie("result");
+        if (!results) {
+            setResent([]);
+            return;
+        }
+        results.sort((a, b) => {
+            if (a.cpm > b.cpm) return -1;
+            if (a.cpm < b.cpm) return 1;
+            if (a.acc > b.acc) return -1;
+            if (a.acc < b.acc) return 1;
+            return 0;
+        });
+        setBest(results[0]);
+        const avgCpm =
+            results.reduce((acc, cur) => acc + cur.cpm, 0) / results.length;
+        const avgAcc =
+            results.reduce((acc, cur) => acc + cur.acc, 0) / results.length;
+        const avgErr =
+            results.reduce((acc, cur) => acc + cur.err, 0) / results.length;
+        setAverage({
+            cpm: Math.round(avgCpm),
+            acc: Math.round(avgAcc),
+            err: Math.round(avgErr),
+        });
+        results.sort((a, b) => {
+            // 최근 결과 순으로 정렬
+            if (a.date > b.date) return -1;
+            if (a.date < b.date) return 1;
+            return 0;
+        });
+        setResent(results);
+    }
+    useEffect(() => {
+        calculateResult();
+    }, []);
     return (
         <MenuContainer>
             <Notification number={100} />
             <MenuContents>
                 <Profile>
                     <ProfileImage>
-                        <DefaultIcon />
+                        {false ? (
+                            <UserIcon src={""} alt="User Profile" />
+                        ) : (
+                            <DefaultIcon />
+                        )}
                     </ProfileImage>
                     <Nickname>Yundol</Nickname>
                 </Profile>
@@ -177,85 +228,46 @@ export function RightMenu() {
             </MenuContents>
             <StatusContatiner>
                 <StatTitle>Best</StatTitle>
-                <StatusCard
-                    title="나의 일기"
-                    author="정윤석"
-                    cpm="239"
-                    acc="98"
-                    err="2"
-                />
+                {best ? (
+                    <StatusCard
+                        title={best.title}
+                        author={best.author}
+                        cpm={best.cpm}
+                        acc={best.acc}
+                        err={best.err}
+                    />
+                ) : (
+                    <NoDataCard />
+                )}
                 <StatTitle>Average</StatTitle>
-                <StatusCard cpm="239" acc="98" err="2" />
+                <StatusCard
+                    cpm={average.cpm}
+                    acc={average.acc}
+                    err={average.err}
+                />
                 <StatTitle>Recent</StatTitle>
                 <RecentCards>
-                    <StatusCard
-                        title="나의 일기"
-                        author="정윤석"
-                        cpm="239"
-                        acc="98"
-                        err="2"
-                    />
-                    <StatusCard
-                        title="나의 일기"
-                        author="정윤석"
-                        cpm="239"
-                        acc="98"
-                        err="2"
-                    />
-                    <StatusCard
-                        title="나의 일기"
-                        author="정윤석"
-                        cpm="239"
-                        acc="98"
-                        err="2"
-                    />
-                    <StatusCard
-                        title="나의 일기"
-                        author="정윤석"
-                        cpm="239"
-                        acc="98"
-                        err="2"
-                    />
-                    <StatusCard
-                        title="나의 일기"
-                        author="정윤석"
-                        cpm="239"
-                        acc="98"
-                        err="2"
-                    />
-                    <StatusCard
-                        title="나의 일기"
-                        author="정윤석"
-                        cpm="239"
-                        acc="98"
-                        err="2"
-                    />
-                    <StatusCard
-                        title="나의 일기"
-                        author="정윤석"
-                        cpm="239"
-                        acc="98"
-                        err="2"
-                    />
-                    <StatusCard
-                        title="나의 일기"
-                        author="정윤석"
-                        cpm="239"
-                        acc="98"
-                        err="2"
-                    />
-                    <StatusCard
-                        title="나의 일기"
-                        author="정윤석"
-                        cpm="239"
-                        acc="98"
-                        err="2"
-                    />
+                    {resent.map((result) => (
+                        <StatusCard
+                            key={result.id}
+                            title={result.title}
+                            author={result.author}
+                            cpm={result.cpm}
+                            acc={result.acc}
+                            err={result.err}
+                        />
+                    ))}
                 </RecentCards>
             </StatusContatiner>
-            <footer>
+            <Footer>
                 <Developer />
-            </footer>
+            </Footer>
         </MenuContainer>
     );
 }
+
+const Footer = styled.footer`
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+`;
