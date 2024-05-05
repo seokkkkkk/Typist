@@ -116,7 +116,7 @@ export function ResultModal({
             id: result[6],
             title: result[7],
             author: result[8],
-            dates: new Date().toLocaleDateString(),
+            date: new Date().toLocaleDateString(),
         };
 
         // 새 결과 추가 전에 배열의 크기를 확인하고, 30개 이상이면 가장 오래된 결과 제거
@@ -126,6 +126,8 @@ export function ResultModal({
 
         // 새 결과를 배열에 추가하고 쿠키 업데이트
         setCookie("result", JSON.stringify([...prevResult, resultData]));
+
+        console.log(getCookie("result"));
     }
     useEffect(() => {
         saveResultToCookie(result);

@@ -151,7 +151,17 @@ export function Main() {
             handleReload();
             setResultReady(false);
         }
-    }, [resultReady, cpm, acc, err, totalTime, result, data, currentText]);
+    }, [
+        resultReady,
+        cpm,
+        acc,
+        err,
+        totalTime,
+        result,
+        data,
+        currentText,
+        isLike,
+    ]);
 
     useEffect(() => {
         if (!resultReady && result.length > 5) {
@@ -162,7 +172,7 @@ export function Main() {
     useEffect(() => {
         let likeIds = getCookie("likeIds") || [];
         setIsLike(likeIds.includes(currentText.id));
-    }, [currentText.id]);
+    }, [currentText.id, currentTextIndex]);
 
     function handleCurrentText({ indexDiff }) {
         if (typeof indexDiff !== "number") {
@@ -192,22 +202,18 @@ export function Main() {
 
     function handleLike() {
         let likeIds = getCookie("likeIds");
-        try {
-            likeIds = JSON.parse(likeIds);
-        } catch (error) {
-            likeIds = [];
-        }
-
-        if (!Array.isArray(likeIds)) {
-            likeIds = [];
-        }
-
-        if (!isLike) {
-            let newLikeIds = [...likeIds, currentText.id];
-            setCookie("likeIds", JSON.stringify(newLikeIds));
+        if (likeIds) {
+            if (!isLike) {
+                let newLikeIds = [...likeIds, currentText.id];
+                setCookie("likeIds", newLikeIds);
+            } else {
+                let filteredLikeIds = likeIds.filter(
+                    (id) => id !== currentText.id
+                );
+                setCookie("likeIds", filteredLikeIds);
+            }
         } else {
-            let filteredLikeIds = likeIds.filter((id) => id !== currentText.id);
-            setCookie("likeIds", JSON.stringify(filteredLikeIds));
+            setCookie("likeIds", [currentText.id]);
         }
         setIsLike(!isLike);
     }

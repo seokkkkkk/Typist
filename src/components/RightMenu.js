@@ -249,7 +249,7 @@ export function RightMenu() {
                 <RecentCards>
                     {resent.map((result) => (
                         <StatusCard
-                            key={result.id}
+                            key={result.date}
                             title={result.title}
                             author={result.author}
                             cpm={result.cpm}
