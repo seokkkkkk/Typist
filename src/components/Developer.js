@@ -81,8 +81,6 @@ export const Developer = () => {
             .then((data) => setDeveloper(data));
     }, []);
 
-    console.log(developer);
-
     return (
         <DeveloperDescription>
             <DescriptText>Developer</DescriptText>

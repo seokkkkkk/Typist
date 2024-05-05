@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+import { shakeAnimation } from "../utils/animation";
 
 const TypingWords = styled.div`
     position: absolute;
@@ -14,13 +15,20 @@ const InputChar = styled.input`
     outline: none;
     padding: 0px;
     font-size: 20px;
-    width: 20px;
+    width: 17px;
+    display: inline-block;
+    animation: ${(props) =>
+        props.isError
+            ? css`
+                  ${shakeAnimation} 0.5s ease
+              `
+            : "none"};
 `;
-
 const Char = styled.span`
     font-size: 20px;
-    width: 20px;
+    width: 17px;
     color: gray;
+    display: inline-block;
     background-color: transparent;
 `;
 
@@ -118,6 +126,8 @@ function InputText({
         setData,
     ]);
 
+    const [isError, setIsError] = useState(false);
+
     const origin = text.split("");
 
     useEffect(() => {
@@ -179,16 +189,20 @@ function InputText({
             setIsInput(false);
             setLetters([...letters, inputValue]);
             setInput("");
+            setIsError(false);
             setCurrentCh(currentCh + 1);
             addCharacterCount();
             setIndex(index + 1);
             setCorrect(correct + 1);
         } else if (origin[index] === " " && inputValue !== " ") {
             setInput("");
+            setIsError(true);
         } else if (origin[index] !== " " && inputValue === " ") {
             setInput("");
+            setIsError(true);
         } else if (currentCh === 2 || inputValue.length > 1) {
             setIsInput(false);
+            setIsError(false);
             setLetters([...letters, inputValue.split("")[0]]);
             setInput("");
             setCurrentCh(currentCh + 1);
@@ -196,6 +210,7 @@ function InputText({
             setIndex(index + 1);
         } else {
             setIsInput(true);
+            setIsError(false);
             setCurrentCh(currentCh + 1);
         }
         if (inputValue.length === 0) {
@@ -220,6 +235,7 @@ function InputText({
                 value={input}
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
+                isError={isError}
             />
         </TypingWords>
     );

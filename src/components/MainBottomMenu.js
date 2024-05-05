@@ -41,9 +41,9 @@ const BottomMenuBody = styled.div`
     align-items: center;
     justify-content: start;
     overflow-y: auto;
-    max-height: 240px;
     margin: 20px 40px 0 40px;
     padding: 10px;
+    height: 100%;
 
     // Webkit 브라우저용 (Chrome, Safari 등)
     &::-webkit-scrollbar {
@@ -96,6 +96,7 @@ const BottomMenu = styled.div`
     background-color: white;
     border-top: 1px solid lightgray;
     z-index: 10;
+    height: 40%;
 `;
 
 export function MainBottomMenu({

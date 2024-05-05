@@ -9,6 +9,7 @@ import { MainMenuBar } from "../components/MainMenuBar";
 import { ReactComponent as Logo } from "../assets/svg/logo.svg";
 import { ReactComponent as Setting } from "../assets/svg/settings.svg";
 import { MainBottomMenu } from "../components/MainBottomMenu";
+import { getCookie, setCookie } from "../utils/TypistCookie";
 
 const MainHeader = styled.header`
     font-size: 24px;
@@ -56,6 +57,7 @@ const LogoStyle = styled(Logo)`
 `;
 
 export function Main() {
+    const [isLike, setIsLike] = useState(false);
     const [totalTime, setTotalTime] = useState(null);
     const [cpm, setCpm] = useState(0);
     const [acc, setAcc] = useState(0);
@@ -67,7 +69,6 @@ export function Main() {
     const [reloadKey, setReloadKey] = useState(0);
     const [reload, setReload] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [isLike, setIsLike] = useState(false);
     const [result, setResult] = useState([]);
     const [data, setData] = useState([
         { time: "00:00", cpm: 0, acc: 100, err: 0 },
@@ -79,6 +80,7 @@ export function Main() {
             uploader: "yundol",
             link: "https://github.com/seokkkkkk",
             text: "오늘은 날씨가 좋다.",
+            id: 1,
         },
         {
             title: "나의 일기",
@@ -86,6 +88,7 @@ export function Main() {
             uploader: "yundol",
             link: "https://github.com/seokkkkkk",
             text: "오늘은 날씨가 춥다.",
+            id: 2,
         },
         {
             title: "나의 일기",
@@ -93,55 +96,7 @@ export function Main() {
             uploader: "yundol",
             link: "https://github.com/seokkkkkk",
             text: "오늘은 날씨가 덥다.",
-        },
-        {
-            title: "나의 일기",
-            author: "정희경",
-            uploader: "yundol",
-            link: "https://github.com/seokkkkkk",
-            text: "오늘은 날씨가 덥다.",
-        },
-        {
-            title: "나의 일기",
-            author: "정희경",
-            uploader: "yundol",
-            link: "https://github.com/seokkkkkk",
-            text: "오늘은 날씨가 덥다.",
-        },
-        {
-            title: "나의 일기",
-            author: "정윤석",
-            uploader: "yundol",
-            link: "https://github.com/seokkkkkk",
-            text: "오늘은 날씨가 좋다.",
-        },
-        {
-            title: "나의 일기",
-            author: "정지원",
-            uploader: "yundol",
-            link: "https://github.com/seokkkkkk",
-            text: "오늘은 날씨가 춥다.",
-        },
-        {
-            title: "나의 일기",
-            author: "정희경",
-            uploader: "yundol",
-            link: "https://github.com/seokkkkkk",
-            text: "오늘은 날씨가 덥다.",
-        },
-        {
-            title: "나의 일기",
-            author: "정희경",
-            uploader: "yundol",
-            link: "https://github.com/seokkkkkk",
-            text: "오늘은 날씨가 덥다.",
-        },
-        {
-            title: "나의 일기",
-            author: "정희경",
-            uploader: "yundol",
-            link: "https://github.com/seokkkkkk",
-            text: "오늘은 날씨가 덥다.",
+            id: 3,
         },
     ]);
     const [currentText, setCurrentText] = useState(texts[0]);
@@ -188,6 +143,11 @@ export function Main() {
         }
     }, [resultReady, result]);
 
+    useEffect(() => {
+        let likeIds = getCookie("likeIds") || [];
+        setIsLike(likeIds.includes(currentText.id));
+    }, [currentText.id]);
+
     function handleCurrentText({ indexDiff }) {
         if (typeof indexDiff !== "number") {
             console.error("indexDiff is not a number:", indexDiff);
@@ -214,6 +174,27 @@ export function Main() {
         setBottomMenuOpen(!bottomMenuOpen);
     }
 
+    function handleLike() {
+        let likeIds = getCookie("likeIds");
+        try {
+            likeIds = JSON.parse(likeIds);
+        } catch (error) {
+            likeIds = [];
+        }
+
+        if (!Array.isArray(likeIds)) {
+            likeIds = [];
+        }
+
+        if (!isLike) {
+            let newLikeIds = [...likeIds, currentText.id];
+            setCookie("likeIds", JSON.stringify(newLikeIds));
+        } else {
+            let filteredLikeIds = likeIds.filter((id) => id !== currentText.id);
+            setCookie("likeIds", JSON.stringify(filteredLikeIds));
+        }
+        setIsLike(!isLike);
+    }
     return (
         <MainPage>
             <div
@@ -240,6 +221,8 @@ export function Main() {
                             isLoading={isLoading}
                             texts={texts}
                             totalTime={totalTime}
+                            isLike={isLike}
+                            handleLike={handleLike}
                         />
                         {!isLoading && (
                             <TypingArea
@@ -279,6 +262,7 @@ export function Main() {
                     setIsLike={setIsLike}
                     isLike={isLike}
                     handleCloseResult={handleCloseResult}
+                    id={currentText.id}
                 />
             )}
             {

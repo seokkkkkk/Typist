@@ -4,6 +4,8 @@ import { ReactComponent as List } from "../assets/svg/menu-burger.svg";
 import { ReactComponent as Left } from "../assets/svg/angle-left.svg";
 import { ReactComponent as Right } from "../assets/svg/angle-right.svg";
 import { ReactComponent as Reload } from "../assets/svg/rotate-right.svg";
+import { ReactComponent as Like } from "../assets/svg/heart.svg";
+import { ReactComponent as Liked } from "../assets/svg/heart_fill.svg";
 
 import { rotateAnimation } from "../utils/animation";
 
@@ -47,12 +49,21 @@ export function MainMenuBar({
     handleBottomMenuOpen,
     currentTextIndex,
     texts,
+    isLike,
+    handleLike,
 }) {
     return (
         <MenuBar>
             <Status cpm={cpm} acc={acc} err={err} totalTime={totalTime} />
             <MenuIcons>
-                <MenuIcon onClick={handleReload}>
+                <MenuIcon onClick={handleLike} name="like button">
+                    {isLike ? (
+                        <Liked width="18px" height="20px" fill="red" />
+                    ) : (
+                        <Like width="18px" height="20px" fill="gray" />
+                    )}
+                </MenuIcon>
+                <MenuIcon onClick={() => handleReload()}>
                     <ConditionalRotatingReload
                         aria-label="다시하기"
                         width="15px"
