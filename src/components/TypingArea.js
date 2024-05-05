@@ -22,10 +22,10 @@ function TypingArea({
     setResultOpen,
     setResult,
     setData,
+    text,
 }) {
     const [index, setIndex] = useState(0);
     const [isInput, setIsInput] = useState(false);
-    const text = "정윤석";
     const inputRef = useRef(null);
 
     return (

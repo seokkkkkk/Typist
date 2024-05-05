@@ -1,21 +1,15 @@
 import { useEffect, useState } from "react";
-import styled, { css } from "styled-components";
-
-import { ReactComponent as Logo } from "../assets/svg/logo.svg";
+import styled from "styled-components";
 
 import { TextInfo } from "../components/TextInfo";
-import { Status } from "../components/Status";
 import { TypingArea } from "../components/TypingArea";
 
-import { ReactComponent as List } from "../assets/svg/menu-burger.svg";
-import { ReactComponent as Left } from "../assets/svg/angle-left.svg";
-import { ReactComponent as Right } from "../assets/svg/angle-right.svg";
-import { ReactComponent as Reload } from "../assets/svg/rotate-right.svg";
-import { ReactComponent as Setting } from "../assets/svg/settings.svg";
 import { ResultModal } from "../components/ResultModal";
 import { RightMenu } from "../components/RightMenu";
-import { rotateAnimation } from "../utils/animation";
 
+import { ReactComponent as Logo } from "../assets/svg/logo.svg";
+import { ReactComponent as Setting } from "../assets/svg/settings.svg";
+import { MainMenuBar } from "../components/MainMenuBar";
 const MainHeader = styled.header`
     font-size: 24px;
     font-weight: 800;
@@ -35,26 +29,6 @@ const MainPage = styled.div`
     display: flex;
     flex-direction: row;
     width: 100%;
-`;
-
-const MenuBar = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: top;
-`;
-
-const MenuIcons = styled.div`
-    margin-right: 10px;
-    width: 120px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-`;
-
-const MenuIcon = styled.span`
-    cursor: pointer;
-    width: 20px;
 `;
 
 const Burger = styled(Setting)`
@@ -81,15 +55,6 @@ const LogoStyle = styled(Logo)`
     margin-right: 10px;
 `;
 
-const ConditionalRotatingReload = styled(Reload)`
-    animation: ${(props) =>
-        props.$isLoading
-            ? css`
-                  ${rotateAnimation} 0.5s linear
-              `
-            : "none"};
-`;
-
 export function Main() {
     const [totalTime, setTotalTime] = useState(null);
     const [cpm, setCpm] = useState(0);
@@ -106,6 +71,35 @@ export function Main() {
     const [data, setData] = useState([
         { time: "00:00", cpm: 0, acc: 100, err: 0 },
     ]);
+    const [texts, setTexts] = useState([
+        {
+            title: "나의 일기",
+            author: "정윤석",
+            uploader: "yundol",
+            link: "https://github.com/seokkkkkk",
+            text: "오늘은 날씨가 좋다.",
+        },
+        {
+            title: "나의 일기",
+            author: "정지원",
+            uploader: "yundol",
+            link: "https://github.com/seokkkkkk",
+            text: "오늘은 날씨가 춥다.",
+        },
+        {
+            title: "나의 일기",
+            author: "정희경",
+            uploader: "yundol",
+            link: "https://github.com/seokkkkkk",
+            text: "오늘은 날씨가 덥다.",
+        },
+    ]);
+    const [currentText, setCurrentText] = useState(texts[0]);
+    const [currentTextIndex, setCurrentTextIndex] = useState(0);
+
+    useEffect(() => {
+        setCurrentText(texts[currentTextIndex]);
+    }, [currentTextIndex, texts]);
 
     function handleReload() {
         setIsLoading(true);
@@ -144,6 +138,23 @@ export function Main() {
         }
     }, [resultReady, result]);
 
+    function handleCurrentText({ indexDiff }) {
+        if (typeof indexDiff !== "number") {
+            console.error("indexDiff is not a number:", indexDiff);
+            return;
+        }
+
+        setCurrentTextIndex((prevIndex) => {
+            const newIndex = prevIndex + indexDiff;
+
+            if (newIndex >= 0 && newIndex < texts.length) {
+                handleReload();
+                return newIndex;
+            }
+            return prevIndex;
+        });
+    }
+
     return (
         <MainPage>
             <div onClick={() => setMenuOpen(false)} style={{ width: "100%" }}>
@@ -153,49 +164,17 @@ export function Main() {
                 </MainLogo>
                 <section>
                     <MainBody>
-                        <MenuBar>
-                            <Status
-                                cpm={cpm}
-                                acc={acc}
-                                err={err}
-                                totalTime={totalTime}
-                            />
-                            <MenuIcons>
-                                <MenuIcon onClick={handleReload}>
-                                    <ConditionalRotatingReload
-                                        aria-label="다시하기"
-                                        width="15px"
-                                        height="20px"
-                                        fill="gray"
-                                        $isLoading={isLoading}
-                                    />
-                                </MenuIcon>
-                                <MenuIcon>
-                                    <Left
-                                        aria-label="이전 글"
-                                        width="15px"
-                                        height="20px"
-                                        fill="gray"
-                                    />
-                                </MenuIcon>
-                                <MenuIcon>
-                                    <Right
-                                        aria-label="다음 글"
-                                        width="15px"
-                                        height="20px"
-                                        fill="gray"
-                                    />
-                                </MenuIcon>
-                                <MenuIcon>
-                                    <List
-                                        aria-label="글 목록"
-                                        width="20px"
-                                        height="20px"
-                                        fill="gray"
-                                    />
-                                </MenuIcon>
-                            </MenuIcons>
-                        </MenuBar>
+                        <MainMenuBar
+                            acc={acc}
+                            cpm={cpm}
+                            currentTextIndex={currentTextIndex}
+                            err={err}
+                            handleCurrentText={handleCurrentText}
+                            handleReload={handleReload}
+                            isLoading={isLoading}
+                            texts={texts}
+                            totalTime={totalTime}
+                        />
                         {!isLoading && (
                             <TypingArea
                                 key={reloadKey}
@@ -209,6 +188,7 @@ export function Main() {
                                 setResultOpen={setResultReady}
                                 setResult={setResult}
                                 setData={setData}
+                                text={currentText.text}
                             />
                         )}
                     </MainBody>
@@ -216,10 +196,10 @@ export function Main() {
                 <footer>
                     {!isLoading && (
                         <TextInfo
-                            title="나의 일기"
-                            link="https://github.com/seokkkkkk"
-                            author="정윤석"
-                            uploader="yundol"
+                            title={currentText.title}
+                            link={currentText.link}
+                            author={currentText.author}
+                            uploader={currentText.uploader}
                         />
                     )}
                 </footer>
