@@ -44,11 +44,11 @@ const TextAuthor = styled.span`
     width: 100%;
 `;
 const ResultCard = styled.div`
-    margin: 10px 0px 10px 0px;
+    margin: 10px 10px 10px 10px;
     box-shadow: 0px 0px 4px 3px rgba(0, 0, 0, 0.1);
     background-color: rgba(255, 255, 255, 0.8);
     border-radius: 10px;
-    width: 100%;
+    width: 90%;
 `;
 
 export function StatusCard({ title, author, cpm, acc, err }) {

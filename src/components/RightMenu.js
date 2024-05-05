@@ -5,6 +5,7 @@ import { ReactComponent as User } from "../assets/svg/user.svg";
 import { ReactComponent as UserEdit } from "../assets/svg/settings.svg";
 import { ReactComponent as Bell } from "../assets/svg/bell.svg";
 import { StatusCard } from "./StatusCard";
+import { Developer } from "./Developer";
 
 const MenuContainer = styled.section`
     background-color: whitesmoke;
@@ -115,6 +116,10 @@ const NotificationNumber = styled.span`
 `;
 
 const StatusContatiner = styled(MenuContents)`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     margin-top: 40px;
     align-items: start;
 `;
@@ -122,6 +127,23 @@ const StatusContatiner = styled(MenuContents)`
 const StatTitle = styled.span`
     font-size: 18px;
     font-weight: bold;
+`;
+
+const RecentCards = styled.div`
+    display: flex;
+    width: 100%;
+    max-height: 360px;
+    flex-direction: column;
+    overflow-y: auto; // Y축 스크롤 활성화
+    // Webkit 브라우저용 (Chrome, Safari 등)
+    &::-webkit-scrollbar {
+        display: none; // 스크롤바 비활성화
+    }
+    // Firefox용
+    scrollbar-width: none; // 스크롤바 숨기기
+
+    // MS Edge 및 IE 11용
+    -ms-overflow-style: none; // 스크롤바 숨기기
 `;
 
 function Notification({ number }) {
@@ -165,35 +187,75 @@ export function RightMenu() {
                 <StatTitle>Average</StatTitle>
                 <StatusCard cpm="239" acc="98" err="2" />
                 <StatTitle>Recent</StatTitle>
-                <StatusCard
-                    title="나의 일기"
-                    author="정윤석"
-                    cpm="239"
-                    acc="98"
-                    err="2"
-                />
-                <StatusCard
-                    title="나의 일기"
-                    author="정윤석"
-                    cpm="239"
-                    acc="98"
-                    err="2"
-                />
-                <StatusCard
-                    title="나의 일기"
-                    author="정윤석"
-                    cpm="239"
-                    acc="98"
-                    err="2"
-                />
-                <StatusCard
-                    title="나의 일기"
-                    author="정윤석"
-                    cpm="239"
-                    acc="98"
-                    err="2"
-                />
+                <RecentCards>
+                    <StatusCard
+                        title="나의 일기"
+                        author="정윤석"
+                        cpm="239"
+                        acc="98"
+                        err="2"
+                    />
+                    <StatusCard
+                        title="나의 일기"
+                        author="정윤석"
+                        cpm="239"
+                        acc="98"
+                        err="2"
+                    />
+                    <StatusCard
+                        title="나의 일기"
+                        author="정윤석"
+                        cpm="239"
+                        acc="98"
+                        err="2"
+                    />
+                    <StatusCard
+                        title="나의 일기"
+                        author="정윤석"
+                        cpm="239"
+                        acc="98"
+                        err="2"
+                    />
+                    <StatusCard
+                        title="나의 일기"
+                        author="정윤석"
+                        cpm="239"
+                        acc="98"
+                        err="2"
+                    />
+                    <StatusCard
+                        title="나의 일기"
+                        author="정윤석"
+                        cpm="239"
+                        acc="98"
+                        err="2"
+                    />
+                    <StatusCard
+                        title="나의 일기"
+                        author="정윤석"
+                        cpm="239"
+                        acc="98"
+                        err="2"
+                    />
+                    <StatusCard
+                        title="나의 일기"
+                        author="정윤석"
+                        cpm="239"
+                        acc="98"
+                        err="2"
+                    />
+                    <StatusCard
+                        title="나의 일기"
+                        author="정윤석"
+                        cpm="239"
+                        acc="98"
+                        err="2"
+                    />
+                </RecentCards>
             </StatusContatiner>
+            <footer>
+                <Developer />
+            </footer>
         </MenuContainer>
     );
 }

@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-
 import { TextInfo } from "../components/TextInfo";
 import { TypingArea } from "../components/TypingArea";
-
 import { ResultModal } from "../components/ResultModal";
 import { RightMenu } from "../components/RightMenu";
+import { MainMenuBar } from "../components/MainMenuBar";
 
 import { ReactComponent as Logo } from "../assets/svg/logo.svg";
 import { ReactComponent as Setting } from "../assets/svg/settings.svg";
-import { MainMenuBar } from "../components/MainMenuBar";
+import { MainBottomMenu } from "../components/MainBottomMenu";
+
 const MainHeader = styled.header`
     font-size: 24px;
     font-weight: 800;
@@ -31,7 +31,7 @@ const MainPage = styled.div`
     width: 100%;
 `;
 
-const Burger = styled(Setting)`
+const SettingIcon = styled(Setting)`
     width: 30px;
     height: 30px;
     fill: gray;
@@ -61,6 +61,7 @@ export function Main() {
     const [acc, setAcc] = useState(0);
     const [err, setErr] = useState(0);
     const [menuOpen, setMenuOpen] = useState(false);
+    const [bottomMenuOpen, setBottomMenuOpen] = useState(false);
     const [resultReady, setResultReady] = useState(false);
     const [resultModal, setResultModal] = useState(false);
     const [reloadKey, setReloadKey] = useState(0);
@@ -85,6 +86,55 @@ export function Main() {
             uploader: "yundol",
             link: "https://github.com/seokkkkkk",
             text: "오늘은 날씨가 춥다.",
+        },
+        {
+            title: "나의 일기",
+            author: "정희경",
+            uploader: "yundol",
+            link: "https://github.com/seokkkkkk",
+            text: "오늘은 날씨가 덥다.",
+        },
+        {
+            title: "나의 일기",
+            author: "정희경",
+            uploader: "yundol",
+            link: "https://github.com/seokkkkkk",
+            text: "오늘은 날씨가 덥다.",
+        },
+        {
+            title: "나의 일기",
+            author: "정희경",
+            uploader: "yundol",
+            link: "https://github.com/seokkkkkk",
+            text: "오늘은 날씨가 덥다.",
+        },
+        {
+            title: "나의 일기",
+            author: "정윤석",
+            uploader: "yundol",
+            link: "https://github.com/seokkkkkk",
+            text: "오늘은 날씨가 좋다.",
+        },
+        {
+            title: "나의 일기",
+            author: "정지원",
+            uploader: "yundol",
+            link: "https://github.com/seokkkkkk",
+            text: "오늘은 날씨가 춥다.",
+        },
+        {
+            title: "나의 일기",
+            author: "정희경",
+            uploader: "yundol",
+            link: "https://github.com/seokkkkkk",
+            text: "오늘은 날씨가 덥다.",
+        },
+        {
+            title: "나의 일기",
+            author: "정희경",
+            uploader: "yundol",
+            link: "https://github.com/seokkkkkk",
+            text: "오늘은 날씨가 덥다.",
         },
         {
             title: "나의 일기",
@@ -155,9 +205,24 @@ export function Main() {
         });
     }
 
+    function handleTextSelect(index) {
+        setCurrentTextIndex(index);
+        setBottomMenuOpen(false);
+    }
+
+    function handleBottomMenuOpen() {
+        setBottomMenuOpen(!bottomMenuOpen);
+    }
+
     return (
         <MainPage>
-            <div onClick={() => setMenuOpen(false)} style={{ width: "100%" }}>
+            <div
+                onClick={() => {
+                    setMenuOpen(false);
+                    if (bottomMenuOpen) setBottomMenuOpen(false);
+                }}
+                style={{ width: "100%" }}
+            >
                 <MainLogo>
                     <LogoStyle width="30px" height="30px" />
                     <MainHeader>Typist</MainHeader>
@@ -171,6 +236,7 @@ export function Main() {
                             err={err}
                             handleCurrentText={handleCurrentText}
                             handleReload={handleReload}
+                            handleBottomMenuOpen={handleBottomMenuOpen}
                             isLoading={isLoading}
                             texts={texts}
                             totalTime={totalTime}
@@ -204,7 +270,7 @@ export function Main() {
                     )}
                 </footer>
             </div>
-            {!menuOpen && <Burger onClick={() => setMenuOpen(true)} />}
+            {!menuOpen && <SettingIcon onClick={() => setMenuOpen(true)} />}
             {menuOpen && <RightMenu />}
             {resultModal && (
                 <ResultModal
@@ -215,6 +281,27 @@ export function Main() {
                     handleCloseResult={handleCloseResult}
                 />
             )}
+            {
+                <>
+                    {bottomMenuOpen && (
+                        <PageContainer
+                            onClick={() => setBottomMenuOpen(false)}
+                        />
+                    )}
+                    <MainBottomMenu
+                        texts={texts}
+                        onSelectText={handleTextSelect}
+                        currentTextIndex={currentTextIndex}
+                        isVisible={bottomMenuOpen}
+                    />
+                </>
+            }
         </MainPage>
     );
 }
+
+const PageContainer = styled.div`
+    position: fixed;
+    height: 100%;
+    width: 100%;
+`;

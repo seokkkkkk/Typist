@@ -9,6 +9,24 @@ export const slideInFromRight = () => keyframes`
   }
 `;
 
+export const slideInFromBottom = () => keyframes`
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+`;
+
+export const slideOutToBottom = () => keyframes`
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+  `;
+
 export const rotateAnimation = () => keyframes`
   from {
     transform: rotate(0deg);

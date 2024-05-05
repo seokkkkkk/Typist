@@ -44,6 +44,7 @@ export function MainMenuBar({
     isLoading,
     handleReload,
     handleCurrentText,
+    handleBottomMenuOpen,
     currentTextIndex,
     texts,
 }) {
@@ -84,6 +85,7 @@ export function MainMenuBar({
                 </MenuIcon>
                 <MenuIcon>
                     <List
+                        onClick={() => handleBottomMenuOpen({ bool: true })}
                         aria-label="글 목록"
                         width="20px"
                         height="20px"
