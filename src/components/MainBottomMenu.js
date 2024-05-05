@@ -38,8 +38,7 @@ const BottomMenuBody = styled.div`
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    align-items: center;
-    justify-content: start;
+    justify-content: center;
     overflow-y: auto;
     margin: 20px 40px 0 40px;
     padding: 10px;
