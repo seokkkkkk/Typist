@@ -21,6 +21,7 @@ function TypingArea({
     setReload,
     setResultOpen,
     setResult,
+    setData,
 }) {
     const [index, setIndex] = useState(0);
     const [isInput, setIsInput] = useState(false);
@@ -44,6 +45,7 @@ function TypingArea({
                 setReload={setReload}
                 setResultOpen={setResultOpen}
                 setResult={setResult}
+                setData={setData}
             />
             <GivenText text={text} index={index} isInput={isInput} />
         </TextArea>

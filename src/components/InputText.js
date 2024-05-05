@@ -47,6 +47,7 @@ function InputText({
     setReload,
     setResultOpen,
     setResult,
+    setData,
 }) {
     const [input, setInput] = useState("");
     const [letters, setLetters] = useState([]);
@@ -77,13 +78,45 @@ function InputText({
     useEffect(() => {
         if (letters.length > 0 && totalTime > 0) {
             const timeInSeconds = totalTime;
-            setCpm(Math.round((totalCh / timeInSeconds) * 60));
-            setAcc(Math.round((correct / letters.length) * 100));
-            setErr(
-                Math.round(((letters.length - correct) / letters.length) * 100)
+            const cpm = Math.round((totalCh / timeInSeconds) * 60);
+            const acc = Math.round((correct / letters.length) * 100);
+            const err = Math.round(
+                ((letters.length - correct) / letters.length) * 100
             );
+            setCpm(cpm);
+            setAcc(acc);
+            setErr(err);
+            setData((currentData) => {
+                const currentTime = `${Math.floor(totalTime / 60)
+                    .toString()
+                    .padStart(2, "0")}:${(totalTime % 60)
+                    .toString()
+                    .padStart(2, "0")}`;
+                const lastEntry = currentData[currentData.length - 1];
+
+                if (lastEntry && lastEntry.time === currentTime) {
+                    return [
+                        ...currentData.slice(0, -1),
+                        { ...lastEntry, cpm, acc, err },
+                    ];
+                } else {
+                    return [
+                        ...currentData,
+                        { time: currentTime, cpm, acc, err },
+                    ];
+                }
+            });
         }
-    }, [totalTime, totalCh, correct, letters.length, setAcc, setCpm, setErr]);
+    }, [
+        totalTime,
+        totalCh,
+        correct,
+        letters.length,
+        setAcc,
+        setCpm,
+        setErr,
+        setData,
+    ]);
 
     const origin = text.split("");
 
@@ -101,7 +134,7 @@ function InputText({
             setResultOpen(true);
             setReload(true);
         }
-    }, [letters, origin, setResultOpen, setReload]);
+    }, [letters, origin, setResultOpen, setReload, setResult, totalCh]);
 
     const handleChange = (e) => {
         const inputValue = e.target.value;

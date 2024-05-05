@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import styled, { keyframes, css } from "styled-components";
+import styled, { css } from "styled-components";
 
 import { ReactComponent as Logo } from "../assets/svg/logo.svg";
 
@@ -11,26 +11,10 @@ import { ReactComponent as List } from "../assets/svg/menu-burger.svg";
 import { ReactComponent as Left } from "../assets/svg/angle-left.svg";
 import { ReactComponent as Right } from "../assets/svg/angle-right.svg";
 import { ReactComponent as Reload } from "../assets/svg/rotate-right.svg";
-
 import { ReactComponent as Setting } from "../assets/svg/settings.svg";
-
-const rotateAnimation = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-`;
-
-const slideInFromRight = keyframes`
-  from {
-    transform: translateX(100%);
-  }
-  to {
-    transform: translateX(0);
-  }
-`;
+import { ResultModal } from "../components/ResultModal";
+import { RightMenu } from "../components/RightMenu";
+import { rotateAnimation } from "../utils/animation";
 
 const MainHeader = styled.header`
     font-size: 24px;
@@ -73,15 +57,6 @@ const MenuIcon = styled.span`
     width: 20px;
 `;
 
-const RightMenu = styled.section`
-    background-color: whitesmoke;
-    box-shadow: 10px 0px 10px 5px rgba(0, 0, 0, 0.5);
-    border: none;
-    width: 400px;
-    height: 100vh;
-    animation: ${slideInFromRight} 0.3s ease-out forwards;
-`;
-
 const Burger = styled(Setting)`
     width: 30px;
     height: 30px;
@@ -108,7 +83,7 @@ const LogoStyle = styled(Logo)`
 
 const ConditionalRotatingReload = styled(Reload)`
     animation: ${(props) =>
-        props.isLoading
+        props.$isLoading
             ? css`
                   ${rotateAnimation} 0.5s linear
               `
@@ -121,12 +96,16 @@ export function Main() {
     const [acc, setAcc] = useState(0);
     const [err, setErr] = useState(0);
     const [menuOpen, setMenuOpen] = useState(false);
-    const [resultOpen, setResultOpen] = useState(false);
+    const [resultReady, setResultReady] = useState(false);
+    const [resultModal, setResultModal] = useState(false);
     const [reloadKey, setReloadKey] = useState(0);
     const [reload, setReload] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-
+    const [isLike, setIsLike] = useState(false);
     const [result, setResult] = useState([]);
+    const [data, setData] = useState([
+        { time: "00:00", cpm: 0, acc: 100, err: 0 },
+    ]);
 
     function handleReload() {
         setIsLoading(true);
@@ -140,20 +119,30 @@ export function Main() {
     }
 
     function handleCloseResult() {
-        setResultOpen(false);
+        setResultModal(false);
         setResult([]);
+        setData([{ time: "00:00", cpm: 0, acc: 100, err: 0 }]);
     }
-    useEffect(() => {
-        if (resultOpen) {
-            setResult([...result, cpm, acc, err, totalTime]);
-        }
-    }, [resultOpen]);
 
     useEffect(() => {
-        if (reload) {
+        if (resultReady) {
+            setResult((prevResult) => [
+                ...prevResult,
+                cpm,
+                acc,
+                err,
+                totalTime,
+            ]);
             handleReload();
+            setResultReady(false);
         }
-    }, [reload]);
+    }, [resultReady, cpm, acc, err, totalTime, result, data]);
+
+    useEffect(() => {
+        if (!resultReady && result.length > 5) {
+            setResultModal(true);
+        }
+    }, [resultReady, result]);
 
     return (
         <MainPage>
@@ -178,7 +167,7 @@ export function Main() {
                                         width="15px"
                                         height="20px"
                                         fill="gray"
-                                        isLoading={isLoading}
+                                        $isLoading={isLoading}
                                     />
                                 </MenuIcon>
                                 <MenuIcon>
@@ -217,8 +206,9 @@ export function Main() {
                                 setTotalTime={setTotalTime}
                                 reload={reload}
                                 setReload={setReload}
-                                setResultOpen={setResultOpen}
+                                setResultOpen={setResultReady}
                                 setResult={setResult}
+                                setData={setData}
                             />
                         )}
                     </MainBody>
@@ -235,55 +225,16 @@ export function Main() {
                 </footer>
             </div>
             {!menuOpen && <Burger onClick={() => setMenuOpen(true)} />}
-            {menuOpen && (
-                <RightMenu>
-                    <div>이름</div>
-                    <div>정보수정</div>
-                    <div>알림</div>
-                    <div>로그아웃</div>
-                    <div>평균타수</div>
-                    <div>최근 기록</div>
-                    <div></div>
-                    <div></div>
-                </RightMenu>
-            )}
-            {resultOpen && (
-                <ResultModal onClick={() => handleCloseResult()}>
-                    <ResultBody>
-                        <div>x</div>
-                        <div>정윤석</div>
-                        <div>자소: {result[0]}</div>
-                        <div>음절: {result[1]}</div>
-                        <div>CPM: {result[2]}</div>
-                        <div>ACC: {result[3]}%</div>
-                        <div>TIME: {result[4]}초</div>
-                        <div>제목</div>
-                        <div>저자</div>
-                        <div>업로더</div>
-                        <div>날짜</div>
-                    </ResultBody>
-                </ResultModal>
+            {menuOpen && <RightMenu />}
+            {resultModal && (
+                <ResultModal
+                    data={data}
+                    result={result}
+                    setIsLike={setIsLike}
+                    isLike={isLike}
+                    handleCloseResult={handleCloseResult}
+                />
             )}
         </MainPage>
     );
 }
-
-const ResultModal = styled.div`
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.3);
-`;
-
-const ResultBody = styled.div`
-    position: absolute;
-    width: 450px;
-    height: 600px;
-    background-color: white;
-    top: 50%; /* 상위 컨테이너 기준으로 50% 위치에 요소의 상단이 오도록 설정 */
-    left: 50%; /* 상위 컨테이너 기준으로 50% 위치에 요소의 왼쪽이 오도록 설정 */
-    transform: translate(
-        -50%,
-        -50%
-    ); /* 요소의 크기에 따라 상단과 왼쪽으로 50%씩 이동하여 중앙에 정확히 위치시킴 */
-`;
