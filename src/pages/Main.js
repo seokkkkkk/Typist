@@ -85,6 +85,7 @@ export function Main() {
     const [data, setData] = useState([
         { time: "00:00", cpm: 0, acc: 100, err: 0 },
     ]);
+    const [resultData, setResultData] = useState([]);
     const [texts, setTexts] = useState([
         {
             title: "나의 일기",
@@ -158,6 +159,7 @@ export function Main() {
         setCpm(0);
         setAcc(0);
         setErr(0);
+        setData([{ time: "00:00", cpm: 0, acc: 100, err: 0 }]);
         setTotalTime(null);
         setReload(true);
     }
@@ -183,6 +185,7 @@ export function Main() {
                 currentText.title,
                 currentText.author,
             ]);
+            setResultData(data);
             handleReload();
             setResultReady(false);
         }
@@ -315,7 +318,7 @@ export function Main() {
             {menuOpen && <RightMenu />}
             {resultModal && (
                 <ResultModal
-                    data={data}
+                    data={resultData}
                     result={result}
                     handleLike={handleLike}
                     isLike={isLike}

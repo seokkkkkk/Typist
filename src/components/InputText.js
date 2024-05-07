@@ -134,7 +134,6 @@ function InputText({
     useEffect(() => {
         if (reload) {
             clearInterval(timerRef.current);
-            setReload(false);
         }
     }, [reload, setReload]);
 
@@ -143,7 +142,6 @@ function InputText({
             setResult([totalCh, letters.length]);
             clearInterval(timerRef.current);
             setResultOpen(true);
-            setReload(true);
         }
     }, [letters, origin, setResultOpen, setReload, setResult, totalCh]);
 
