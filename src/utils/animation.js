@@ -9,6 +9,17 @@ export const slideInFromRight = () => keyframes`
   }
 `;
 
+export const slideOutToRight = keyframes`
+    0% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+`;
+
 export const slideInFromBottom = () => keyframes`
   from {
     transform: translateY(100%);

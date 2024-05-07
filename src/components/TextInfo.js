@@ -2,11 +2,10 @@ import styled from "styled-components";
 import { ReactComponent as LinkIcon } from "../assets/svg/link.svg";
 
 const Info = styled.div`
-    position: absolute;
-    bottom: 20px;
     margin: 0 40px 0 40px;
     font-size: 15px;
     font-weight: 400;
+    width: ${(props) => (props.$small ? "78%" : "100%")};
 `;
 
 const TextLink = styled.a`
@@ -38,9 +37,9 @@ const InfoColumn = styled.div`
     margin-bottom: 5px;
 `;
 
-function TextInfo({ title, link, author, uploader }) {
+function TextInfo({ title, link, author, uploader, small }) {
     return (
-        <Info>
+        <Info $small={small}>
             <hr />
             <InfoColumn>
                 <b>{title}</b>

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { slideInFromRight } from "../utils/animation";
+import { slideInFromRight, slideOutToRight } from "../utils/animation";
 
 import { ReactComponent as User } from "../assets/svg/user.svg";
 import { ReactComponent as UserEdit } from "../assets/svg/settings.svg";
@@ -11,34 +11,46 @@ import { useEffect, useState } from "react";
 import { NoDataCard } from "./NoDataCard";
 
 const MenuContainer = styled.section`
+    position: fixed;
+    right: 0;
     background-color: whitesmoke;
     box-shadow: -10px 0px 10px -10px rgba(0, 0, 0, 0.5);
     border: none;
     width: 400px;
-    height: 100vh;
-    animation: ${slideInFromRight} 0.3s ease-out forwards;
+    height: 100dvh;
+    animation: ${(props) =>
+            props.$isVisible ? slideInFromRight : slideOutToRight}
+        0.3s ease-out forwards;
+    //너비가 600 이하인 경우 너비 줄임 (반응형)
+    @media (max-width: 800px) {
+        position: fixed;
+        width: 200px;
+    }
+    z-index: 11;
 `;
 
 const ProfileImage = styled.span`
+    margin-top: 60px;
+    margin-bottom: 10px;
     background-color: white;
     overflow: hidden;
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
     display: flex;
     justify-content: center;
     align-items: center;
 `;
 
 const UserIcon = styled.img`
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
     object-fit: cover;
 `;
 
 const DefaultIcon = styled(User)`
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
     fill: gray;
     object-fit: cover;
 `;
@@ -55,6 +67,7 @@ const MenuContents = styled.div`
 const Nickname = styled.span`
     font-size: 15px;
     font-weight: bold;
+    margin-bottom: 5px;
 `;
 
 const Logout = styled.span`
@@ -67,7 +80,6 @@ const Logout = styled.span`
 `;
 
 const Profile = styled.div`
-    margin-top: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -119,12 +131,22 @@ const NotificationNumber = styled.span`
 `;
 
 const StatusContatiner = styled(MenuContents)`
+    height: 60%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    margin-top: 40px;
+    justify-content: start;
+    margin-top: 20px;
     align-items: start;
+    @media (min-height: 1200px) {
+        height: 70%;
+    }
+    @media (max-height: 880px) {
+        height: 58%;
+    }
+    @media (max-height: 840px) {
+        height: 42%;
+    }
 `;
 
 const StatTitle = styled.span`
@@ -135,7 +157,6 @@ const StatTitle = styled.span`
 const RecentCards = styled.div`
     display: flex;
     width: 100%;
-    max-height: 360px;
     flex-direction: column;
     overflow-y: auto; // Y축 스크롤 활성화
     // Webkit 브라우저용 (Chrome, Safari 등)
@@ -162,7 +183,7 @@ function Notification({ number }) {
     );
 }
 
-export function RightMenu() {
+export function RightMenu({ userData, isVisible }) {
     const [average, setAverage] = useState({
         cpm: 0,
         acc: 0,
@@ -207,8 +228,9 @@ export function RightMenu() {
     useEffect(() => {
         calculateResult();
     }, []);
+
     return (
-        <MenuContainer>
+        <MenuContainer $isVisible={isVisible}>
             <Notification number={100} />
             <MenuContents>
                 <Profile>
@@ -219,7 +241,7 @@ export function RightMenu() {
                             <DefaultIcon />
                         )}
                     </ProfileImage>
-                    <Nickname>Yundol</Nickname>
+                    <Nickname>{userData ? userData.name : "Guest"}</Nickname>
                 </Profile>
                 <ProfileEditButtons>
                     <Logout>logout</Logout>
@@ -259,15 +281,7 @@ export function RightMenu() {
                     ))}
                 </RecentCards>
             </StatusContatiner>
-            <Footer>
-                <Developer />
-            </Footer>
+            <Developer />
         </MenuContainer>
     );
 }
-
-const Footer = styled.footer`
-    position: absolute;
-    bottom: 20px;
-    width: 100%;
-`;

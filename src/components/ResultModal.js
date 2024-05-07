@@ -16,7 +16,6 @@ import {
     Legend,
     ResponsiveContainer,
 } from "recharts";
-import { ChartDotSquare, ChartDotTriangle } from "./CustomDot";
 import { CustomTooltip } from "./CustomTooltip";
 import { TextInfo } from "./TextInfo";
 import { useEffect, useMemo } from "react";
@@ -33,6 +32,9 @@ const Button = styled.button`
 
 const BoldText = styled.span`
     font-weight: 800;
+    @media (max-width: 450px) {
+        font-size: 12px;
+    }
 `;
 
 const ResultButtons = styled.div`
@@ -41,8 +43,12 @@ const ResultButtons = styled.div`
     justify-content: space-between;
     align-items: center;
     position: absolute;
-    bottom: 30px;
-    right: 70px;
+    bottom: 37px;
+    right: 60px;
+    @media (max-width: 450px) {
+        bottom: 49px;
+        right: 42px;
+    }
 `;
 
 const ResultText = styled.span`
@@ -71,18 +77,24 @@ const ResultHeader = styled.div`
 
 const ResultHr = styled.hr`
     margin: 20px 40px 20px 40px;
+    @media (max-width: 450px) {
+        margin: 25px 40px 25px 40px;
+    }
 `;
 
 const ResultTitle = styled.div`
     font-size: 24px;
     font-weight: 800;
     margin-top: 20px;
+    @media (max-width: 450px) {
+        font-size: 22px;
+    }
 `;
 
 const ResultContainer = styled.div`
+    z-index: 100;
     position: absolute;
-    left: -50%;
-    width: 200%;
+    width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.3);
 `;
@@ -95,13 +107,18 @@ const ResultBox = styled.div`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    @media (max-width: 450px) {
+        width: 360px;
+        height: 640px;
+    }
 `;
 
 export function ResultModal({
+    userData,
     data,
     handleCloseResult,
     result,
-    setIsLike,
+    handleLike,
     isLike,
     textInfo,
 }) {
@@ -128,8 +145,6 @@ export function ResultModal({
 
         // 새 결과를 배열에 추가하고 쿠키 업데이트
         setCookie("result", JSON.stringify([...prevResult, resultData]));
-
-        console.log(getCookie("result"));
     }
     useEffect(() => {
         saveResultToCookie(result);
@@ -182,6 +197,28 @@ export function ResultModal({
             modal.focus();
         }
     }, []);
+
+    const LogoBox = styled(Logo)`
+        width: 70px;
+        height: 70px;
+        @media (max-width: 450px) {
+            margin-top: 10px;
+            width: 60px;
+            height: 60px;
+        }
+    `;
+
+    const SmallText = styled.span`
+        @media (max-width: 450px) {
+            font-size: 12px;
+        }
+    `;
+    const Xmargin = styled.div`
+        height: 20px;
+        @media (max-width: 450px) {
+            height: 40px;
+        }
+    `;
     return (
         <ResultContainer onKeyDown={handleKeyDown} tabIndex="0" id="result">
             <ResultBox id="resultBox">
@@ -194,22 +231,22 @@ export function ResultModal({
                     />
                 </Button>
                 <ResultHeader>
-                    <Logo width="80px" height="80px" />
+                    <LogoBox />
                     <ResultTitle>Typist Result Report</ResultTitle>
                 </ResultHeader>
-
                 <ResultHr />
-
                 <ResultSection>
                     <ResultText>
                         <BoldText>USERNAME</BoldText>
-                        <span>정윤석</span>
+                        <SmallText>
+                            {userData ? userData.name : "Guest"}
+                        </SmallText>
                     </ResultText>
                     <ResultText>
                         <BoldText>TOTAL INPUT / SYLLABLE</BoldText>
-                        <span>
+                        <SmallText>
                             {result[0]} / {result[1]}
-                        </span>
+                        </SmallText>
                     </ResultText>
                 </ResultSection>
 
@@ -218,22 +255,21 @@ export function ResultModal({
                 <ResultSection>
                     <ResultText>
                         <BoldText>CPM</BoldText>
-                        <span>{result[2]}</span>
+                        <SmallText>{result[2]}</SmallText>
                     </ResultText>
                     <ResultText>
                         <BoldText>ACC</BoldText>
-                        <span>{result[3]}%</span>
+                        <SmallText>{result[3]}%</SmallText>
                     </ResultText>
                     <ResultText>
                         <BoldText>ERR</BoldText>
-                        <span>{result[4]}%</span>
+                        <SmallText>{result[4]}%</SmallText>
                     </ResultText>
                     <ResultText>
                         <BoldText>TIME</BoldText>
-                        <span>{result[5]}초</span>
+                        <SmallText>{result[5]}초</SmallText>
                     </ResultText>
                 </ResultSection>
-
                 <ResponsiveContainer
                     width="100%"
                     height={170}
@@ -289,12 +325,10 @@ export function ResultModal({
                                 },
                                 {
                                     value: "ACC",
-                                    type: "square",
                                     color: "#4B89DC",
                                 },
                                 {
                                     value: "ERR",
-                                    type: "triangle",
                                     color: "#FF0000",
                                 },
                             ]}
@@ -305,6 +339,7 @@ export function ResultModal({
                             type="monotone"
                             dataKey="cpm"
                             stroke="#ADD468"
+                            dot={{ r: 0 }}
                         />
                         <Line
                             yAxisId="right"
@@ -312,7 +347,7 @@ export function ResultModal({
                             dataKey="err"
                             stroke="#FF0000"
                             legendType="triangle"
-                            dot={<ChartDotTriangle fill="#FF0000" length={8} />}
+                            dot={{ r: 0 }}
                         />
                         <Line
                             yAxisId="right"
@@ -320,21 +355,20 @@ export function ResultModal({
                             dataKey="acc"
                             stroke="#4B89DC"
                             legendType="square"
-                            dot={<ChartDotSquare fill="#4B89DC" length={6} />}
+                            dot={{ r: 0 }}
                         />
                     </LineChart>
                 </ResponsiveContainer>
+                <Xmargin />
                 <TextInfo
                     title={textInfo.title}
                     link={textInfo.link}
                     author={textInfo.author}
                     uploader={textInfo.uploader}
+                    small={true}
                 />
                 <ResultButtons>
-                    <Button
-                        onClick={() => setIsLike(!isLike)}
-                        name="like button"
-                    >
+                    <Button onClick={() => handleLike()} name="like button">
                         {isLike ? (
                             <Liked width="20px" height="20px" fill="red" />
                         ) : (

@@ -4,11 +4,15 @@ import { shakeAnimation } from "../utils/animation";
 
 const TypingWords = styled.div`
     position: absolute;
-    top: 178.5px;
+    top: 147px;
     margin-right: 30px;
+    @media (min-width: 1001px) {
+        top: 149px;
+    }
 `;
 
 const InputChar = styled.input`
+    margin-left: 0px;
     background-color: transparent;
     caret-color: gray;
     border: none;
@@ -133,16 +137,14 @@ function InputText({
     useEffect(() => {
         if (reload) {
             clearInterval(timerRef.current);
-            setReload(false);
         }
     }, [reload, setReload]);
 
     useEffect(() => {
         if (letters.length === origin.length) {
-            setResult([letters.length, totalCh]);
+            setResult([totalCh, letters.length]);
             clearInterval(timerRef.current);
             setResultOpen(true);
-            setReload(true);
         }
     }, [letters, origin, setResultOpen, setReload, setResult, totalCh]);
 
