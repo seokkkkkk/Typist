@@ -10,6 +10,7 @@ import { ReactComponent as Liked } from "../assets/svg/heart_fill.svg";
 import { rotateAnimation } from "../utils/animation";
 
 const MenuBar = styled.div`
+    margin-right: 30px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -27,6 +28,11 @@ const MenuIcons = styled.div`
 const MenuIcon = styled.span`
     cursor: pointer;
     width: 20px;
+    margin-left: 2px;
+`;
+
+const LikeButton = styled(MenuIcon)`
+    margin-right: 6px;
 `;
 
 const ConditionalRotatingReload = styled(Reload)`
@@ -56,13 +62,13 @@ export function MainMenuBar({
         <MenuBar>
             <Status cpm={cpm} acc={acc} err={err} totalTime={totalTime} />
             <MenuIcons>
-                <MenuIcon onClick={handleLike} name="like button">
+                <LikeButton onClick={handleLike} name="like button">
                     {isLike ? (
                         <Liked width="18px" height="20px" fill="red" />
                     ) : (
                         <Like width="18px" height="20px" fill="gray" />
                     )}
-                </MenuIcon>
+                </LikeButton>
                 <MenuIcon onClick={() => handleReload()}>
                     <ConditionalRotatingReload
                         aria-label="다시하기"

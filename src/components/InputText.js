@@ -4,11 +4,12 @@ import { shakeAnimation } from "../utils/animation";
 
 const TypingWords = styled.div`
     position: absolute;
-    top: 178.5px;
+    top: 167px;
     margin-right: 30px;
 `;
 
 const InputChar = styled.input`
+    margin-left: 0px;
     background-color: transparent;
     caret-color: gray;
     border: none;

@@ -4,6 +4,7 @@ import { InputText } from "../components/InputText";
 import { useState } from "react";
 
 const TextArea = styled.span`
+    margin-left: 40px;
     width: 100%;
     display: flex;
     flex-direction: column;

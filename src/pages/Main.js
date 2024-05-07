@@ -7,7 +7,7 @@ import { RightMenu } from "../components/RightMenu";
 import { MainMenuBar } from "../components/MainMenuBar";
 
 import { ReactComponent as Logo } from "../assets/svg/logo.svg";
-import { ReactComponent as Setting } from "../assets/svg/settings.svg";
+import { ReactComponent as Home } from "../assets/svg/home.svg";
 import { MainBottomMenu } from "../components/MainBottomMenu";
 import { getCookie, setCookie } from "../utils/TypistCookie";
 import { EndOfText } from "../components/EndAlert";
@@ -24,7 +24,7 @@ const MainBody = styled.div`
     display: flex;
     justify-content: center;
     flex-direction: column;
-    margin: 50px 30px 0 40px;
+    margin: 50px 30px 0 25spx;
 `;
 
 const MainPage = styled.div`
@@ -35,7 +35,7 @@ const MainPage = styled.div`
     height: 100vh;
 `;
 
-const SettingIcon = styled(Setting)`
+const HomeIcon = styled(Home)`
     width: 30px;
     height: 30px;
     fill: gray;
@@ -52,6 +52,7 @@ const MainLogo = styled.div`
     justify-content: center;
     margin-top: 20px;
     margin-right: 40px;
+    margin-bottom: 40px;
 `;
 
 const LogoStyle = styled(Logo)`
@@ -310,7 +311,7 @@ export function Main() {
                     )}
                 </footer>
             </div>
-            {!menuOpen && <SettingIcon onClick={() => setMenuOpen(true)} />}
+            {!menuOpen && <HomeIcon onClick={() => setMenuOpen(true)} />}
             {menuOpen && <RightMenu />}
             {resultModal && (
                 <ResultModal

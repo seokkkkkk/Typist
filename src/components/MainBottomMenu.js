@@ -12,38 +12,43 @@ const BottomText = styled.span`
 const TextUploader = styled(BottomText)`
     font-size: 12px;
     color: gray;
+    @media (max-width: 550px) {
+        font-size: 10px;
+    }
 `;
 
 const TextAuthor = styled(BottomText)`
     font-size: 12px;
     color: gray;
+    @media (max-width: 550px) {
+        font-size: 10px;
+    }
 `;
 
-const BottomMenuColumn = styled.div`
-    margin: 0px 10px 0px 10px;
-`;
-
-const TextIndex = styled(BottomText)`
-    font-weight: 1000;
-    width: 20px;
-    margin-right: 10px;
-`;
+const BottomMenuColumn = styled.div``;
 
 const TextTitle = styled(BottomText)`
     font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    @media (max-width: 550px) {
+        flex-direction: column;
+        font-size: 14px;
+    }
 `;
 
 const BottomMenuBody = styled.div`
-    gap: 10px;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: start;
+    gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); // 가로로 3개의 열
+    grid-auto-rows: auto; // 아래로 자동으로 늘어나게 설정
+    justify-content: center;
     overflow-y: auto;
-    margin: 20px 40px 0 40px;
     padding: 10px;
     height: 60%;
-    width: 100%;
+    width: 90%;
 
     // Webkit 브라우저용 (Chrome, Safari 등)
     &::-webkit-scrollbar {
@@ -58,6 +63,7 @@ const BottomMenuBody = styled.div`
 `;
 
 const BottomTextCell = styled.div`
+    padding: 10px 12px 0px 12px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -65,9 +71,11 @@ const BottomTextCell = styled.div`
     background-color: ${(props) => (props.$isSelected ? "#f0f0f0" : "white")};
     box-shadow: 2px 2px 5px 2px #bebebe, -5px -5px 10px #ffffff;
     border-radius: 10px;
-    width: 30%;
-    height: 80px;
     cursor: pointer;
+    width: 88%;
+    @media (max-width: 550px) {
+        padding: 5px 6px 0px 6px;
+    }
 `;
 
 const ListIcon = styled(List)`
@@ -80,13 +88,16 @@ const ListIcon = styled(List)`
 const BottomMenuTitle = styled.div`
     font-size: 20px;
     font-weight: bold;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin: -10px 0px 10px 0px;
     display: flex;
     justify-content: center;
 `;
 
 const BottomMenu = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     position: absolute;
     max-width: 1000px;
     animation: ${(props) =>
@@ -118,10 +129,13 @@ export function MainBottomMenu({
                         onClick={() => onSelectText(index)}
                         $isSelected={index === currentTextIndex}
                     >
-                        <TextIndex>{index + 1}</TextIndex>
                         <BottomMenuColumn>
-                            <TextTitle>{text.title}</TextTitle>
-                            <TextAuthor>({text.author})</TextAuthor>
+                            <TextTitle>
+                                <span>
+                                    {index + 1 + ". " + text.title + " "}
+                                </span>
+                                <TextAuthor>({text.author})</TextAuthor>
+                            </TextTitle>
                         </BottomMenuColumn>
                         <BottomMenuColumn>
                             <TextUploader>
