@@ -242,5 +242,4 @@ function InputText({
         </TypingWords>
     );
 }
-
 export { InputText };

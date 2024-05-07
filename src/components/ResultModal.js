@@ -135,7 +135,7 @@ export function ResultModal({
             id: result[6],
             title: result[7],
             author: result[8],
-            date: new Date().toLocaleDateString(),
+            date: new Date().getTime(),
         };
 
         // 새 결과 추가 전에 배열의 크기를 확인하고, 30개 이상이면 가장 오래된 결과 제거
