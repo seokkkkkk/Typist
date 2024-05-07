@@ -4,8 +4,11 @@ import { shakeAnimation } from "../utils/animation";
 
 const TypingWords = styled.div`
     position: absolute;
-    top: 167px;
+    top: 147px;
     margin-right: 30px;
+    @media (min-width: 1001px) {
+        top: 149px;
+    }
 `;
 
 const InputChar = styled.input`

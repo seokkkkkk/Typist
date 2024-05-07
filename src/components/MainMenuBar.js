@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 import { Status } from "../components/Status";
-import { ReactComponent as List } from "../assets/svg/menu-burger.svg";
+import { ReactComponent as Home } from "../assets/svg/home.svg";
 import { ReactComponent as Left } from "../assets/svg/angle-left.svg";
 import { ReactComponent as Right } from "../assets/svg/angle-right.svg";
 import { ReactComponent as Reload } from "../assets/svg/rotate-right.svg";
@@ -52,7 +52,7 @@ export function MainMenuBar({
     isLoading,
     handleReload,
     handleCurrentText,
-    handleBottomMenuOpen,
+    handleMenuOpen,
     currentTextIndex,
     texts,
     isLike,
@@ -101,8 +101,8 @@ export function MainMenuBar({
                     />
                 </MenuIcon>
                 <MenuIcon>
-                    <List
-                        onClick={() => handleBottomMenuOpen({ bool: true })}
+                    <Home
+                        onClick={() => handleMenuOpen({ bool: true })}
                         aria-label="글 목록"
                         width="20px"
                         height="20px"

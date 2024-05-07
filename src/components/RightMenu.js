@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { slideInFromRight } from "../utils/animation";
+import { slideInFromRight, slideOutToRight } from "../utils/animation";
 
 import { ReactComponent as User } from "../assets/svg/user.svg";
 import { ReactComponent as UserEdit } from "../assets/svg/settings.svg";
@@ -11,22 +11,26 @@ import { useEffect, useState } from "react";
 import { NoDataCard } from "./NoDataCard";
 
 const MenuContainer = styled.section`
+    position: fixed;
     right: 0;
     background-color: whitesmoke;
     box-shadow: -10px 0px 10px -10px rgba(0, 0, 0, 0.5);
     border: none;
     width: 400px;
-    height: 100vh;
-    animation: ${slideInFromRight} 0.3s ease-out forwards;
+    height: 100dvh;
+    animation: ${(props) =>
+            props.$isVisible ? slideInFromRight : slideOutToRight}
+        0.3s ease-out forwards;
     //너비가 600 이하인 경우 너비 줄임 (반응형)
     @media (max-width: 800px) {
         position: fixed;
         width: 200px;
     }
+    z-index: 11;
 `;
 
 const ProfileImage = styled.span`
-    margin-top: 30px;
+    margin-top: 60px;
     margin-bottom: 10px;
     background-color: white;
     overflow: hidden;
@@ -63,6 +67,7 @@ const MenuContents = styled.div`
 const Nickname = styled.span`
     font-size: 15px;
     font-weight: bold;
+    margin-bottom: 5px;
 `;
 
 const Logout = styled.span`
@@ -130,7 +135,7 @@ const StatusContatiner = styled(MenuContents)`
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: start;
     margin-top: 20px;
     align-items: start;
     @media (min-height: 1200px) {
@@ -140,7 +145,7 @@ const StatusContatiner = styled(MenuContents)`
         height: 58%;
     }
     @media (max-height: 840px) {
-        height: 45%;
+        height: 42%;
     }
 `;
 
@@ -178,7 +183,7 @@ function Notification({ number }) {
     );
 }
 
-export function RightMenu() {
+export function RightMenu({ userData, isVisible }) {
     const [average, setAverage] = useState({
         cpm: 0,
         acc: 0,
@@ -223,8 +228,9 @@ export function RightMenu() {
     useEffect(() => {
         calculateResult();
     }, []);
+
     return (
-        <MenuContainer>
+        <MenuContainer $isVisible={isVisible}>
             <Notification number={100} />
             <MenuContents>
                 <Profile>
@@ -235,7 +241,7 @@ export function RightMenu() {
                             <DefaultIcon />
                         )}
                     </ProfileImage>
-                    <Nickname>Yundol</Nickname>
+                    <Nickname>{userData ? userData.name : "Guest"}</Nickname>
                 </Profile>
                 <ProfileEditButtons>
                     <Logout>logout</Logout>

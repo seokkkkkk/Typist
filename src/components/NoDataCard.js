@@ -17,6 +17,16 @@ const NoDataText = styled.div`
 const NoDataTitle = styled.div`
     font-size: 15px;
     font-weight: bold;
+    @media (max-width: 801px) {
+        display: none;
+    }
+`;
+
+const NoDataTitleMini = styled(NoDataTitle)`
+    display: none;
+    @media (max-width: 801px) {
+        display: inline;
+    }
 `;
 
 const NoDataBody = styled.div`
@@ -35,6 +45,8 @@ export function NoDataCard() {
             <NoDataBody>
                 <NoData width="20px" height="20px" fill="gray" />
                 <NoDataTitle>No typist usage information yet.</NoDataTitle>
+                <NoDataTitleMini>No typist usage</NoDataTitleMini>
+                <NoDataTitleMini>information yet.</NoDataTitleMini>
                 <NoDataText> Let's get started now!</NoDataText>
             </NoDataBody>
         </NoDataContainer>

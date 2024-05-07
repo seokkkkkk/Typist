@@ -43,10 +43,11 @@ const ResultButtons = styled.div`
     justify-content: space-between;
     align-items: center;
     position: absolute;
-    bottom: 30px;
-    right: 70px;
+    bottom: 37px;
+    right: 60px;
     @media (max-width: 450px) {
-        right: 40px;
+        bottom: 49px;
+        right: 42px;
     }
 `;
 
@@ -113,6 +114,7 @@ const ResultBox = styled.div`
 `;
 
 export function ResultModal({
+    userData,
     data,
     handleCloseResult,
     result,
@@ -212,8 +214,9 @@ export function ResultModal({
         }
     `;
     const Xmargin = styled.div`
+        height: 20px;
         @media (max-width: 450px) {
-            height: 10px;
+            height: 40px;
         }
     `;
     return (
@@ -235,7 +238,9 @@ export function ResultModal({
                 <ResultSection>
                     <ResultText>
                         <BoldText>USERNAME</BoldText>
-                        <SmallText>정윤석</SmallText>
+                        <SmallText>
+                            {userData ? userData.name : "Guest"}
+                        </SmallText>
                     </ResultText>
                     <ResultText>
                         <BoldText>TOTAL INPUT / SYLLABLE</BoldText>
@@ -265,7 +270,6 @@ export function ResultModal({
                         <SmallText>{result[5]}초</SmallText>
                     </ResultText>
                 </ResultSection>
-                <Xmargin />
                 <ResponsiveContainer
                     width="100%"
                     height={170}
@@ -355,11 +359,13 @@ export function ResultModal({
                         />
                     </LineChart>
                 </ResponsiveContainer>
+                <Xmargin />
                 <TextInfo
                     title={textInfo.title}
                     link={textInfo.link}
                     author={textInfo.author}
                     uploader={textInfo.uploader}
+                    small={true}
                 />
                 <ResultButtons>
                     <Button onClick={() => handleLike()} name="like button">
