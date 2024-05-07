@@ -101,7 +101,7 @@ export function ResultModal({
     data,
     handleCloseResult,
     result,
-    setIsLike,
+    handleLike,
     isLike,
     textInfo,
 }) {
@@ -128,8 +128,6 @@ export function ResultModal({
 
         // 새 결과를 배열에 추가하고 쿠키 업데이트
         setCookie("result", JSON.stringify([...prevResult, resultData]));
-
-        console.log(getCookie("result"));
     }
     useEffect(() => {
         saveResultToCookie(result);
@@ -331,10 +329,7 @@ export function ResultModal({
                     uploader={textInfo.uploader}
                 />
                 <ResultButtons>
-                    <Button
-                        onClick={() => setIsLike(!isLike)}
-                        name="like button"
-                    >
+                    <Button onClick={() => handleLike()} name="like button">
                         {isLike ? (
                             <Liked width="20px" height="20px" fill="red" />
                         ) : (

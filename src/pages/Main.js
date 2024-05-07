@@ -316,7 +316,7 @@ export function Main() {
                 <ResultModal
                     data={data}
                     result={result}
-                    setIsLike={setIsLike}
+                    handleLike={handleLike}
                     isLike={isLike}
                     handleCloseResult={handleCloseResult}
                     textInfo={currentText}

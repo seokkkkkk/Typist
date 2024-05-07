@@ -139,7 +139,7 @@ function InputText({
 
     useEffect(() => {
         if (letters.length === origin.length) {
-            setResult([letters.length, totalCh]);
+            setResult([totalCh, letters.length]);
             clearInterval(timerRef.current);
             setResultOpen(true);
             setReload(true);
