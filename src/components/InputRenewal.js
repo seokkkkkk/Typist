@@ -11,20 +11,6 @@ const TypingWords = styled.div`
     overflow: nowrap;
 `;
 
-const InputChar = styled.input`
-    background-color: transparent;
-    caret-color: transparent;
-    border: none;
-    outline: none;
-    padding: 0px;
-    margin: 0px;
-    font-size: 20px;
-    min-width: 6px;
-    display: inline-block;
-    width: 20px;
-    margin-bottom: 8px;
-`;
-
 const Char = styled.span`
     font-size: 20px;
     min-width: 6px;
@@ -95,7 +81,6 @@ function InputRenewal({
     const timerRef = useRef(null);
 
     const [isInvalid, setIsInvalid] = useState(false);
-    const [isWrong, setIsWrong] = useState(false);
 
     useEffect(() => {
         if (isTypingStarted) {
@@ -255,7 +240,6 @@ function InputRenewal({
                 } else {
                     var newHangul = Hangul.assemble(typingPart + e.key);
                     if (newHangul.length > 1) {
-                        setIsWrong(true);
                         setLetters([...letters, typingPart]);
                         setInputCount(inputCount + 1);
                         if (origin[index + 1] === " ") {
@@ -299,11 +283,9 @@ function InputRenewal({
                     if (e.key === origin[index]) {
                         setCorrect(correct + 1);
                     } else {
-                        setIsWrong(true);
                     }
                     setIndex(index + 1);
                 } else if (checkCharacterType(origin[index] === "Hangul")) {
-                    setIsWrong(true);
                     setLetters([...letters, typingPart]);
                     setTypingPart("");
                     setIsInput(false);
@@ -317,7 +299,6 @@ function InputRenewal({
                     if (e.key === origin[index - 1]) {
                         setCorrect(correct + 1);
                     } else {
-                        setIsWrong(true);
                     }
                 }
                 break;
