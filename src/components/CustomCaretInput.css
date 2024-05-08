@@ -1,0 +1,26 @@
+.custom-caret-container {
+    position: relative;
+    display: inline-block;
+}
+
+.custom-caret-input {
+    caret-color: transparent; /* Hide the default caret */
+    padding: 8px;
+    font-size: 16px;
+    width: 200px;
+}
+
+.custom-caret {
+    position: absolute;
+    bottom: 5px;
+    left: 0;
+    width: 2px;
+    height: 18px;
+    background-color: red;
+    opacity: 0;
+    transition: opacity 0.1s ease-in-out;
+}
+
+.custom-caret.visible {
+    opacity: 1;
+}

@@ -32,7 +32,6 @@ export function Main() {
     const [reload, setReload] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [result, setResult] = useState([]);
-    const inputRef = useRef(null);
     const [openAlert, setOpenAlert] = useState(false);
     const [data, setData] = useState([
         { time: "00:00", cpm: 0, acc: 100, err: 0 },
@@ -246,7 +245,6 @@ export function Main() {
                             setResult={setResult}
                             setData={setData}
                             text={currentText.text}
-                            inputRef={inputRef}
                         />
                     )}
                 </MainBody>

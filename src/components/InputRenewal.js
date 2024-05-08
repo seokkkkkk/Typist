@@ -1,14 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
-import styled, { css } from "styled-components";
-import { shakeAnimation } from "../utils/animation";
+import styled from "styled-components";
 import Hangul from "hangul-js";
+import CustomCaretInput from "./CustomCaretInput";
+import { mildShake } from "../utils/animation";
 
 const TypingWords = styled.div`
     top: 1px;
-    width: 100%;
     position: relative;
     height: 1px;
-    margin-right: 40px;
+    overflow: nowrap;
 `;
 
 const InputChar = styled.input`
@@ -19,16 +19,19 @@ const InputChar = styled.input`
     padding: 0px;
     margin: 0px;
     font-size: 20px;
-    width: 17px;
+    min-width: 6px;
     display: inline-block;
+    width: 20px;
+    margin-bottom: 8px;
 `;
 
 const Char = styled.span`
     font-size: 20px;
-    width: 17px;
+    min-width: 6px;
     color: gray;
     display: inline-block;
     background-color: transparent;
+    margin-bottom: 8px;
 `;
 
 const CorrectChar = styled(Char)`
@@ -37,7 +40,33 @@ const CorrectChar = styled(Char)`
 const IncorrectChar = styled(Char)`
     color: red;
     text-decoration: underline;
+    animation: ${mildShake} 0.5s ease-in-out;
 `;
+
+function checkCharacterType(input) {
+    const hangulRegex = /[ㄱ-ㅎㅏ-ㅣ가-힣]/;
+    const englishRegex = /^[a-zA-Z\s]*$/;
+    const specialRegex = /[^\w\s]/;
+
+    if (input === "Backspace") {
+        return "Backspace";
+    } else if (input === " ") {
+        return "Space";
+    } else if (input === "Shift") {
+        return "Shift";
+    } else if (hangulRegex.test(input)) {
+        return "Hangul";
+    } else if (englishRegex.test(input)) {
+        if (input.length > 1) {
+            return "Trash";
+        }
+        return "English";
+    } else if (specialRegex.test(input)) {
+        return "Special Characters";
+    } else {
+        return "Unknown";
+    }
+}
 
 function InputRenewal({
     text,
@@ -64,6 +93,9 @@ function InputRenewal({
 
     const origin = text.split("");
     const timerRef = useRef(null);
+
+    const [isInvalid, setIsInvalid] = useState(false);
+    const [isWrong, setIsWrong] = useState(false);
 
     useEffect(() => {
         if (isTypingStarted) {
@@ -101,6 +133,14 @@ function InputRenewal({
             setResultOpen(true);
         }
     }, [letters, origin, setResultOpen, setReload, setResult, inputCount]);
+
+    useEffect(() => {
+        if (typingPart.length > 0) {
+            setIsInput(true);
+        } else {
+            setIsInput(false);
+        }
+    }, [typingPart, setIsInput]);
 
     useEffect(() => {
         if (letters.length > 0 && totalTime > 0) {
@@ -145,31 +185,6 @@ function InputRenewal({
         setData,
     ]);
 
-    function checkCharacterType(input) {
-        const hangulRegex = /[ㄱ-ㅎㅏ-ㅣ가-힣]/;
-        const englishRegex = /^[a-zA-Z\s]*$/;
-        const specialRegex = /[^\w\s]/;
-
-        if (input === "Backspace") {
-            return "Backspace";
-        } else if (input === " ") {
-            return "Space";
-        } else if (input === "Shift") {
-            return "Shift";
-        } else if (hangulRegex.test(input)) {
-            return "Hangul";
-        } else if (englishRegex.test(input)) {
-            if (input.length > 1) {
-                return "Trash";
-            }
-            return "English";
-        } else if (specialRegex.test(input)) {
-            return "Special Characters";
-        } else {
-            return "Unknown";
-        }
-    }
-
     function handleLetterAdd(e) {
         setLetters([...letters, typingPart]);
         setIndex(index + 1);
@@ -191,7 +206,7 @@ function InputRenewal({
         }
         switch (checkCharacterType(e.key)) {
             case "Backspace":
-                if (letters.length > 0) {
+                if (letters.length > 0 || typingPart !== "") {
                     if (typingPart === "") {
                         setLetters(letters.slice(0, -1));
                         setIndex(index - 1);
@@ -222,12 +237,15 @@ function InputRenewal({
                     setCorrect(correct + 1);
                     setIndex(index + 1);
                     setLetters([...letters, " "]);
+                } else {
+                    setIsInvalid(true);
                 }
                 break;
             case "Shift":
                 break;
             case "Hangul":
-                if (origin[index] === " ") {
+                if (checkCharacterType(origin[index]) !== "Hangul") {
+                    setIsInvalid(true);
                     break;
                 }
                 if (typingPart === "") {
@@ -237,6 +255,7 @@ function InputRenewal({
                 } else {
                     var newHangul = Hangul.assemble(typingPart + e.key);
                     if (newHangul.length > 1) {
+                        setIsWrong(true);
                         setLetters([...letters, typingPart]);
                         setInputCount(inputCount + 1);
                         if (origin[index + 1] === " ") {
@@ -267,14 +286,27 @@ function InputRenewal({
             case "Special Characters":
             case "English":
                 if (origin[index] === " ") {
+                    setIsInvalid(true);
                     break;
                 }
                 if (typingPart === "") {
+                    if (checkCharacterType(origin[index]) === "Hangul") {
+                        setIsInvalid(true);
+                        break;
+                    }
                     setLetters([...letters, e.key]);
                     setInputCount(inputCount + 1);
                     if (e.key === origin[index]) {
                         setCorrect(correct + 1);
+                    } else {
+                        setIsWrong(true);
                     }
+                    setIndex(index + 1);
+                } else if (checkCharacterType(origin[index] === "Hangul")) {
+                    setIsWrong(true);
+                    setLetters([...letters, typingPart]);
+                    setTypingPart("");
+                    setIsInput(false);
                     setIndex(index + 1);
                 } else {
                     setLetters([...letters, typingPart, e.key]);
@@ -284,6 +316,8 @@ function InputRenewal({
                     setInputCount(inputCount + 1);
                     if (e.key === origin[index - 1]) {
                         setCorrect(correct + 1);
+                    } else {
+                        setIsWrong(true);
                     }
                 }
                 break;
@@ -292,16 +326,8 @@ function InputRenewal({
         }
     }
 
-    useEffect(() => {
-        if (typingPart.length > 0) {
-            setIsInput(true);
-        } else {
-            setIsInput(false);
-        }
-    }, [typingPart, setIsInput]);
-
     return (
-        <TypingWords onClick={() => inputRef.current.focus()}>
+        <TypingWords>
             {letters.map((letter, i) =>
                 letter === origin[i] ? (
                     <CorrectChar key={i}>{letter}</CorrectChar>
@@ -309,18 +335,12 @@ function InputRenewal({
                     <IncorrectChar key={i}>{letter}</IncorrectChar>
                 )
             )}
-            <InputChar
-                name="typing-area"
+            <CustomCaretInput
                 ref={inputRef}
-                type="text"
-                value={typingPart}
                 onKeyDown={handleKeyDown}
-                onChange={(e) => {}}
-                autoComplete="off"
-                autoCapitalize="off"
-                autoCorrect="off"
-                spellCheck="false"
-                autoFocus
+                value={typingPart}
+                setIsInvalid={setIsInvalid}
+                isInvalid={isInvalid}
             />
         </TypingWords>
     );
