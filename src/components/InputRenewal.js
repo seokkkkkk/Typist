@@ -55,6 +55,8 @@ function checkCharacterType(input) {
 }
 
 function InputRenewal({
+    canType,
+    setCanType,
     text,
     index,
     setIndex,
@@ -107,17 +109,35 @@ function InputRenewal({
         if (letters.length === origin.length) {
             setResult([inputCount, letters.length]);
             clearInterval(timerRef.current);
+            setCanType(false);
             setResultOpen(true);
         }
-    }, [letters, origin, setResultOpen, setReload, setResult, inputCount]);
+    }, [
+        letters,
+        origin,
+        setResultOpen,
+        setReload,
+        setResult,
+        inputCount,
+        setCanType,
+    ]);
 
     useEffect(() => {
         if (letters.length === origin.length) {
             setResult([inputCount, letters.length]);
             clearInterval(timerRef.current);
+            setCanType(false);
             setResultOpen(true);
         }
-    }, [letters, origin, setResultOpen, setReload, setResult, inputCount]);
+    }, [
+        letters,
+        origin,
+        setResultOpen,
+        setReload,
+        setResult,
+        inputCount,
+        setCanType,
+    ]);
 
     useEffect(() => {
         if (typingPart.length > 0) {
@@ -186,6 +206,10 @@ function InputRenewal({
     }
 
     function handleKeyDown(e) {
+        console.log(canType);
+        if (!canType) {
+            return;
+        }
         if (!isTypingStarted) {
             setIsTypingStarted(true); // 타이핑 시작 감지
         }

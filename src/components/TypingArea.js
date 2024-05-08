@@ -14,6 +14,8 @@ const TextArea = styled.span`
 `;
 
 function TypingArea({
+    canType,
+    setCanType,
     setAcc,
     setErr,
     setCpm,
@@ -39,6 +41,8 @@ function TypingArea({
             }}
         >
             <InputRenewal
+                canType={canType}
+                setCanType={setCanType}
                 text={text}
                 index={index}
                 setIndex={setIndex}
