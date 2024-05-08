@@ -1,15 +1,15 @@
 import styled from "styled-components";
 import { GivenText } from "../components/GivenText";
-import { InputText } from "../components/InputText";
 import { useState } from "react";
+import { InputRenewal } from "./InputRenewal";
 
 const TextArea = styled.span`
+    margin-top: 10px;
     margin-left: 40px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
     cursor: text;
-    flex-wrap: wrap;
+    margin-right: 35px;
+    max-height: 30dvh;
+    overflow-y: hidden;
 `;
 
 function TypingArea({
@@ -31,7 +31,7 @@ function TypingArea({
 
     return (
         <TextArea onClick={() => inputRef.current.focus()}>
-            <InputText
+            <InputRenewal
                 text={text}
                 index={index}
                 setIndex={setIndex}
