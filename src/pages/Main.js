@@ -10,13 +10,14 @@ import { EndOfText } from "../components/EndAlert";
 import {
     Footer,
     List,
-    LogoStyle,
+    Logo,
     MainBody,
     MainHeader,
     MainLogo,
     MainPage,
 } from "./Main.styled";
 import styled from "styled-components";
+import { LoginModal } from "../components/LoginModal";
 
 export function Main() {
     const [isLike, setIsLike] = useState(false);
@@ -37,6 +38,7 @@ export function Main() {
         { time: "00:00", cpm: 0, acc: 100, err: 0 },
     ]);
     const [resultData, setResultData] = useState([]);
+    const [loginModalOpen, setLoginModalOpen] = useState(false);
     const [texts, setTexts] = useState([
         {
             title: "나의 일기",
@@ -213,7 +215,7 @@ export function Main() {
                 }}
             >
                 <MainLogo>
-                    <LogoStyle width="30px" height="30px" />
+                    <Logo />
                     <MainHeader>Typist</MainHeader>
                 </MainLogo>
                 <MainBody>
@@ -265,7 +267,11 @@ export function Main() {
                 )}
                 <List onClick={() => setBottomMenuOpen(true)} />
             </Footer>
-            <RightMenu userData={userData} isVisible={rightMenuOpen} />
+            <RightMenu
+                userData={userData}
+                isVisible={rightMenuOpen}
+                setLoginModalOpen={setLoginModalOpen}
+            />
             {resultModal && (
                 <ResultModal
                     userData={userData}
@@ -286,6 +292,9 @@ export function Main() {
                 />
             }
             {openAlert && <EndOfText setOpenAlert={setOpenAlert} />}
+            {loginModalOpen && (
+                <LoginModal setLoginModalOpen={setLoginModalOpen} />
+            )}
         </MainPage>
     );
 }

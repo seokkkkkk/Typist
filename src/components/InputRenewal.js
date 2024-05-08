@@ -21,7 +21,7 @@ const Char = styled.span`
 `;
 
 const CorrectChar = styled(Char)`
-    color: black;
+    color: #2f2f2f;
 `;
 const IncorrectChar = styled(Char)`
     color: red;
