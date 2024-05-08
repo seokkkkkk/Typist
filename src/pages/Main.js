@@ -10,13 +10,14 @@ import { EndOfText } from "../components/EndAlert";
 import {
     Footer,
     List,
-    LogoStyle,
+    Logo,
     MainBody,
     MainHeader,
     MainLogo,
     MainPage,
 } from "./Main.styled";
 import styled from "styled-components";
+import { LoginModal } from "../components/LoginModal";
 
 export function Main() {
     const [isLike, setIsLike] = useState(false);
@@ -32,19 +33,22 @@ export function Main() {
     const [reload, setReload] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [result, setResult] = useState([]);
-    const inputRef = useRef(null);
     const [openAlert, setOpenAlert] = useState(false);
+    const [canType, setCanType] = useState(true);
     const [data, setData] = useState([
         { time: "00:00", cpm: 0, acc: 100, err: 0 },
     ]);
     const [resultData, setResultData] = useState([]);
+    const [loginModalOpen, setLoginModalOpen] = useState(false);
+    // 웹 500자
+    // 모바일 120자
     const [texts, setTexts] = useState([
         {
             title: "나의 일기",
             author: "정윤석",
             uploader: "yundol",
             link: "https://github.com/seokkkkkk",
-            text: "오늘은 날씨가 좋다.",
+            text: "",
             id: 1,
         },
         {
@@ -52,7 +56,7 @@ export function Main() {
             author: "정지원",
             uploader: "yundol",
             link: "https://github.com/seokkkkkk",
-            text: "오늘은 날씨가 춥다.",
+            text: "오늘은 날씨가 춥다 오늘은 날씨가 춥다 오늘은 날씨가 춥다",
             id: 2,
         },
         {
@@ -108,6 +112,7 @@ export function Main() {
 
     useEffect(() => {
         if (resultReady) {
+            setCanType(false);
             setResult((prevResult) => [
                 ...prevResult,
                 cpm,
@@ -150,6 +155,7 @@ export function Main() {
 
     function handleCloseResult() {
         setResultModal(false);
+        setCanType(true);
         setResult([]);
         setData([{ time: "00:00", cpm: 0, acc: 100, err: 0 }]);
         if (texts.length > currentTextIndex + 1)
@@ -214,7 +220,7 @@ export function Main() {
                 }}
             >
                 <MainLogo>
-                    <LogoStyle width="30px" height="30px" />
+                    <Logo />
                     <MainHeader>Typist</MainHeader>
                 </MainLogo>
                 <MainBody>
@@ -234,6 +240,8 @@ export function Main() {
                     />
                     {!isLoading && (
                         <TypingArea
+                            canType={canType}
+                            setCanType={setCanType}
                             key={reloadKey}
                             setAcc={setAcc}
                             setErr={setErr}
@@ -246,7 +254,6 @@ export function Main() {
                             setResult={setResult}
                             setData={setData}
                             text={currentText.text}
-                            inputRef={inputRef}
                         />
                     )}
                 </MainBody>
@@ -267,7 +274,11 @@ export function Main() {
                 )}
                 <List onClick={() => setBottomMenuOpen(true)} />
             </Footer>
-            <RightMenu userData={userData} isVisible={rightMenuOpen} />
+            <RightMenu
+                userData={userData}
+                isVisible={rightMenuOpen}
+                setLoginModalOpen={setLoginModalOpen}
+            />
             {resultModal && (
                 <ResultModal
                     userData={userData}
@@ -288,6 +299,9 @@ export function Main() {
                 />
             }
             {openAlert && <EndOfText setOpenAlert={setOpenAlert} />}
+            {loginModalOpen && (
+                <LoginModal setLoginModalOpen={setLoginModalOpen} />
+            )}
         </MainPage>
     );
 }

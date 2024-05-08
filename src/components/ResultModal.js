@@ -43,10 +43,10 @@ const ResultButtons = styled.div`
     justify-content: space-between;
     align-items: center;
     position: absolute;
-    bottom: 37px;
+    bottom: 42px;
     right: 60px;
     @media (max-width: 450px) {
-        bottom: 49px;
+        bottom: 63px;
         right: 42px;
     }
 `;
@@ -60,22 +60,30 @@ const ResultText = styled.span`
 `;
 
 const ResultSection = styled.section`
+    width: 70%;
     margin: 0px 70px 0px 70px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    @media (max-width: 450px) {
+        width: 68%;
+    }
 `;
 
 const ResultHeader = styled.div`
-    margin-top: 30px;
+    margin-top: 10px;
     margin-bottom: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    @media (max-width: 450px) {
+        margin-top: 0px;
+    }
 `;
 
 const ResultHr = styled.hr`
+    width: 76%;
     margin: 20px 40px 20px 40px;
     @media (max-width: 450px) {
         margin: 25px 40px 25px 40px;
@@ -100,6 +108,10 @@ const ResultContainer = styled.div`
 `;
 
 const ResultBox = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     position: absolute;
     width: 450px;
     height: 600px;
@@ -135,7 +147,7 @@ export function ResultModal({
             id: result[6],
             title: result[7],
             author: result[8],
-            date: new Date().toLocaleDateString(),
+            date: new Date().getTime(),
         };
 
         // 새 결과 추가 전에 배열의 크기를 확인하고, 30개 이상이면 가장 오래된 결과 제거
@@ -216,20 +228,22 @@ export function ResultModal({
     const Xmargin = styled.div`
         height: 20px;
         @media (max-width: 450px) {
-            height: 40px;
+            height: 20px;
         }
     `;
     return (
-        <ResultContainer onKeyDown={handleKeyDown} tabIndex="0" id="result">
-            <ResultBox id="resultBox">
-                <Button onClick={() => handleCloseResult()} name="back-button">
-                    <Back
-                        width="20px"
-                        height="20px"
-                        fill="gray"
-                        style={{ margin: "15px -15px -15px 15px" }}
-                    />
-                </Button>
+        <ResultContainer
+            onKeyDown={handleKeyDown}
+            onClick={() => handleCloseResult()}
+            tabIndex="0"
+            id="result"
+        >
+            <ResultBox
+                id="resultBox"
+                onClick={(e) => {
+                    e.stopPropagation();
+                }}
+            >
                 <ResultHeader>
                     <LogoBox />
                     <ResultTitle>Typist Result Report</ResultTitle>

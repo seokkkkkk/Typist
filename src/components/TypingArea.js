@@ -1,18 +1,21 @@
 import styled from "styled-components";
 import { GivenText } from "../components/GivenText";
-import { InputText } from "../components/InputText";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { InputRenewal } from "./InputRenewal";
 
 const TextArea = styled.span`
+    margin-top: 10px;
     margin-left: 40px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
     cursor: text;
-    flex-wrap: wrap;
+    margin-right: 35px;
+    max-height: 30dvh;
+    overflow-y: hidden;
+    overflow-x: hidden;
 `;
 
 function TypingArea({
+    canType,
+    setCanType,
     setAcc,
     setErr,
     setCpm,
@@ -24,14 +27,22 @@ function TypingArea({
     setResult,
     setData,
     text,
-    inputRef,
 }) {
     const [index, setIndex] = useState(0);
     const [isInput, setIsInput] = useState(false);
+    const inputRef = useRef(null);
 
     return (
-        <TextArea onClick={() => inputRef.current.focus()}>
-            <InputText
+        <TextArea
+            onClick={() => {
+                if (inputRef.current) {
+                    inputRef.current.focus();
+                }
+            }}
+        >
+            <InputRenewal
+                canType={canType}
+                setCanType={setCanType}
                 text={text}
                 index={index}
                 setIndex={setIndex}

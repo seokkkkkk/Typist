@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { ReactComponent as Logo } from "../assets/svg/logo.svg";
+import { ReactComponent as LogoIcon } from "../assets/svg/logo.svg";
 import { ReactComponent as ListIcon } from "../assets/svg/menu-burger.svg";
 
 export const MainPage = styled.div`
@@ -49,7 +49,9 @@ export const MainHeader = styled.header`
     margin-top: 40px;
 `;
 
-export const LogoStyle = styled(Logo)`
+export const Logo = styled(LogoIcon)`
+    width: 30px;
+    height: 30px;
     margin-top: 35px;
     margin-right: 10px;
 `;
