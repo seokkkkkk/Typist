@@ -12,7 +12,7 @@ const TextArea = styled.span`
     overflow-x: hidden;
     max-height: 60dvh;
     @media (min-height: 660px) {
-        max-height: 55dvh;
+        max-height: 50dvh;
     }
     @media (min-height: 720px) {
         max-height: 65dvh;
@@ -47,7 +47,7 @@ function TypingArea({
         if (isInput && inputRef.current) {
             inputRef.current.scrollIntoView({
                 behavior: "smooth",
-                block: "start",
+                block: "nearest",
             });
         }
     }, [index, isInput]);

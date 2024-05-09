@@ -209,6 +209,12 @@ const SocialLoginButtons = styled.div`
     }
 `;
 
+const InvalidType = styled(Typist)`
+    color: red;
+    margin-bottom: 0px;
+    margin-top: 10px;
+`;
+
 export const LoginModal = ({ setLoginModalOpen }) => {
     const [isLogin, setIsLogin] = useState(true);
     return (
@@ -216,31 +222,34 @@ export const LoginModal = ({ setLoginModalOpen }) => {
             <LoginContainer onClick={(e) => e.stopPropagation()}>
                 <header>
                     <Logo />
-                    <Title>Login to Typist</Title>
+                    <Title>
+                        {isLogin ? "Login to Typist" : "Welcom New Typist"}
+                    </Title>
                 </header>
+                {/* <InvalidType>여기에 내용 추가</InvalidType> */}
                 <Form method="" action="">
                     <Fieldset>
-                        <SrOnly as="legend">Login</SrOnly>
+                        <SrOnly as="legend">
+                            {isLogin ? "Login" : "Sign Up"}
+                        </SrOnly>
                         <Inputs>
-                            <SrOnly htmlFor="id">ID</SrOnly>
+                            <SrOnly htmlFor="typist-id">ID</SrOnly>
                             <Input
                                 type="text"
-                                id="id"
+                                id="typist-id"
                                 placeholder="Email address"
                             />
-                            <SrOnly htmlFor="password">Password</SrOnly>
+                            <SrOnly htmlFor="typist-password">Password</SrOnly>
                             <Input
                                 type="password"
-                                id="password"
+                                id="typist-password"
                                 placeholder="Password"
                             />
                         </Inputs>
                     </Fieldset>
-                    {isLogin ? (
-                        <Button type="submit">Sign In</Button>
-                    ) : (
-                        <Button type="submit">Create an account</Button>
-                    )}
+                    <Button type="submit">
+                        {isLogin ? "Sign In" : "Create an account"}
+                    </Button>
 
                     {isLogin ? (
                         <>
@@ -277,7 +286,6 @@ export const LoginModal = ({ setLoginModalOpen }) => {
         </LoginBackground>
     );
 };
-
 const Hr = styled.hr`
     margin-top: 20px;
     border: 1px solid #f5f5f5;

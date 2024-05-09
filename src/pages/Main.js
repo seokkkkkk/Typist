@@ -17,6 +17,8 @@ import {
     MainPage,
 } from "./Main.styled";
 import { LoginModal } from "../components/LoginModal";
+import { EmailVerificationModal } from "../components/EmailVerificationModal";
+import { NicknameModal } from "../components/NicknameModal.js";
 
 export function Main() {
     const [isLike, setIsLike] = useState(false);
@@ -63,7 +65,7 @@ export function Main() {
             author: "정윤석",
             uploader: "yundol",
             link: "https://github.com/seokkkkkk",
-            text: "오늘은 날씨가 좋다.",
+            text: "QWER qwer ㅂㅈㄷㄱ 1234 ₩!@#$%^&*()_+{}|\":?><.,/;'[]\\=-",
             id: 1,
         },
         {
@@ -298,6 +300,8 @@ export function Main() {
             {loginModalOpen && (
                 <LoginModal setLoginModalOpen={setLoginModalOpen} />
             )}
+            {/* <EmailVerificationModal /> */}
+            {/* <NicknameModal /> */}
         </MainPage>
     );
 }
