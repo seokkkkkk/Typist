@@ -33,6 +33,7 @@ function checkCharacterType(input) {
     const hangulRegex = /[ㄱ-ㅎㅏ-ㅣ가-힣]/;
     const englishRegex = /^[a-zA-Z\s]*$/;
     const specialRegex = /[^\w\s]/;
+    const numberRegex = /[0-9]/;
 
     if (input === "Backspace") {
         return "Backspace";
@@ -40,13 +41,14 @@ function checkCharacterType(input) {
         return "Space";
     } else if (input === "Shift") {
         return "Shift";
+    } else if (input.length !== 1) {
+        return "Unknown";
     } else if (hangulRegex.test(input)) {
         return "Hangul";
     } else if (englishRegex.test(input)) {
-        if (input.length > 1) {
-            return "Trash";
-        }
         return "English";
+    } else if (numberRegex.test(input)) {
+        return "Number";
     } else if (specialRegex.test(input)) {
         return "Special Characters";
     } else {
@@ -206,7 +208,6 @@ function InputRenewal({
     }
 
     function handleKeyDown(e) {
-        console.log(canType);
         if (!canType) {
             return;
         }
@@ -258,9 +259,17 @@ function InputRenewal({
                     break;
                 }
                 if (typingPart === "") {
-                    setIsInput(true);
-                    setTypingPart(e.key);
-                    setInputCount(inputCount + 1);
+                    if (e.key === origin[index]) {
+                        setCorrect(correct + 1);
+                        setIndex(index + 1);
+                        setInputCount(inputCount + 1);
+                        setIsInput(false);
+                        setLetters([...letters, e.key]);
+                    } else {
+                        setIsInput(true);
+                        setTypingPart(e.key);
+                        setInputCount(inputCount + 1);
+                    }
                 } else {
                     var newHangul = Hangul.assemble(typingPart + e.key);
                     if (newHangul.length > 1) {
@@ -291,6 +300,7 @@ function InputRenewal({
                     }
                 }
                 break;
+            case "Number":
             case "Special Characters":
             case "English":
                 if (origin[index] === " ") {
@@ -298,7 +308,10 @@ function InputRenewal({
                     break;
                 }
                 if (typingPart === "") {
-                    if (checkCharacterType(origin[index]) === "Hangul") {
+                    if (
+                        checkCharacterType(origin[index]) !==
+                        checkCharacterType(e.key)
+                    ) {
                         setIsInvalid(true);
                         break;
                     }
