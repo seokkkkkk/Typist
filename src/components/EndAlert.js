@@ -3,7 +3,8 @@ import { ReactComponent as NoData } from "../assets/svg/nodata.svg";
 
 const EndAlertBackground = styled.div`
     position: absolute;
-    width: 100%;
+    width: 200%;
+    left: -50%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.2);
     z-index: 10;

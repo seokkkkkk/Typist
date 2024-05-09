@@ -102,7 +102,8 @@ const ResultTitle = styled.div`
 const ResultContainer = styled.div`
     z-index: 100;
     position: absolute;
-    width: 100%;
+    left: -50%;
+    width: 200%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.3);
 `;
