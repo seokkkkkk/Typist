@@ -10,15 +10,24 @@ const TextArea = styled.span`
     margin-right: 35px;
     overflow-y: hidden;
     overflow-x: hidden;
-    max-height: 60dvh;
-    @media (min-height: 660px) {
-        max-height: 50dvh;
-    }
-    @media (min-height: 720px) {
+    max-height: 70dvh;
+    @media (max-height: 885px) {
         max-height: 65dvh;
     }
-    @media (min-height: 950px) {
-        max-height: 73dvh;
+    @media (max-height: 720px) {
+        max-height: 58dvh;
+    }
+    @media (max-height: 630px) {
+        max-height: 54dvh;
+    }
+    @media (max-height: 560px) {
+        max-height: 45dvh;
+    }
+    @media (max-height: 485px) {
+        max-height: 38dvh;
+    }
+    @media (max-height: 460px) {
+        max-height: 35dvh;
     }
 `;
 

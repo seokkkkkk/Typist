@@ -25,9 +25,9 @@ const OrText = styled.span`
 
 const LoginBackground = styled.div`
     position: absolute;
-    width: 100%;
+    width: 200%;
     height: 100%;
-    left: 0;
+    left: -50%;
     top: 0;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 20;
