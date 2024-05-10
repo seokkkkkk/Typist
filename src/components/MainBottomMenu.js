@@ -152,8 +152,10 @@ export function MainBottomMenu({
                 <BottomTextCell
                     onClick={async () => {
                         setIsLoading(true);
-                        await handleNewText();
-                        setIsLoading(false);
+                        //handleNewText()  함수가 끝날 때까지 기다림
+                        await handleNewText().then(() => {
+                            setIsLoading(false);
+                        });
                     }}
                 >
                     <TextTitle>New Text</TextTitle>

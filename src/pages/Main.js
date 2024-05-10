@@ -103,7 +103,7 @@ export function Main() {
     }, []);
 
     async function handleNewText() {
-        getTexts();
+        await getTexts();
     }
 
     useEffect(() => {
