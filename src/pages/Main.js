@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { TextInfo } from "../components/TextInfo";
 import { TypingArea } from "../components/TypingArea";
 import { ResultModal } from "../components/ResultModal";
@@ -15,11 +15,14 @@ import {
     MainHeader,
     MainLogo,
     MainPage,
+    RemainingArea,
 } from "./Main.styled";
 import { LoginModal } from "../components/LoginModal";
 import { EmailVerificationModal } from "../components/EmailVerificationModal";
 import { NicknameModal } from "../components/NicknameModal.js";
 import AdviceAPI from "../api/AdviceAPI.js";
+import { Loading } from "../components/Loading.js";
+import styled from "styled-components";
 
 export function Main() {
     const [isLike, setIsLike] = useState(false);
@@ -81,15 +84,24 @@ export function Main() {
 
     // 첫 실행시 기본으로 5개의 텍스트를 가져옴(중복 제외)
     useEffect(() => {
-        getTexts();
-        setTimeout(() => getTexts(), 2000);
+        const loadInitialTexts = async () => {
+            setIsLoading(true); // Start loading
+            await getTexts(); // Wait for the first fetch to complete
+            setIsLoading(false); // End loading after the second fetch completes
+            setTimeout(async () => {
+                await getTexts(); // After 2 seconds, fetch again
+            }, 2000);
+        };
+
+        loadInitialTexts();
     }, []);
 
     async function handleNewText() {
-        setTimeout(() => getTexts(), 1000);
-        if (texts.length > 8) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        if (texts.length >= 8) {
             texts.shift();
         }
+        getTexts();
     }
 
     useEffect(() => {
@@ -205,19 +217,12 @@ export function Main() {
 
     return (
         <MainPage>
-            <MainLogo
-                onClick={() => {
-                    handleMenuClose();
-                }}
-            >
+            {isLoading && <Loading />}
+            <MainLogo>
                 <Logo />
                 <MainHeader>Typist</MainHeader>
             </MainLogo>
-            <MainBody
-                onClick={() => {
-                    handleMenuClose();
-                }}
-            >
+            <MainBody>
                 {texts && (
                     <MainMenuBar
                         acc={acc}
@@ -254,6 +259,9 @@ export function Main() {
                     />
                 )}
             </MainBody>
+            {(bottomMenuOpen || rightMenuOpen) && (
+                <RemainingArea onClick={() => handleMenuClose()} />
+            )}
             <Footer>
                 {!isLoading && currentText && (
                     <TextInfo
@@ -269,6 +277,7 @@ export function Main() {
                 userData={userData}
                 isVisible={rightMenuOpen}
                 setLoginModalOpen={setLoginModalOpen}
+                handleMenuClose={handleMenuClose}
             />
             {resultModal && (
                 <ResultModal
@@ -287,6 +296,8 @@ export function Main() {
                     onSelectText={handleTextSelect}
                     currentTextIndex={currentTextIndex}
                     isVisible={bottomMenuOpen}
+                    handleNewText={handleNewText}
+                    handleMenuClose={handleMenuClose}
                 />
             }
             {openAlert && <EndOfText setOpenAlert={setOpenAlert} />}

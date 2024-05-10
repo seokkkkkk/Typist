@@ -404,6 +404,7 @@ function InputRenewal({
                 value={typingPart}
                 setIsInvalid={setIsInvalid}
                 isInvalid={isInvalid}
+                autoFocus
             />
         </TypingWords>
     );

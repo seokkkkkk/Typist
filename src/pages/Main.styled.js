@@ -69,3 +69,11 @@ export const PageContainer = styled.div`
     height: 100%;
     width: 100%;
 `;
+
+export const RemainingArea = styled.div`
+    left: -50%;
+    width: 200%;
+    height: 100%;
+    position: absolute;
+    background-color: transparent;
+`;

@@ -2,6 +2,8 @@ import styled from "styled-components";
 
 import { ReactComponent as List } from "../assets/svg/features.svg";
 import { slideInFromBottom, slideOutToBottom } from "../utils/animation";
+import { useEffect, useRef, useState } from "react";
+import { LoadingSmall } from "./Loading";
 
 const BottomText = styled.span`
     white-space: nowrap;
@@ -116,9 +118,12 @@ export function MainBottomMenu({
     onSelectText,
     currentTextIndex,
     isVisible,
+    handleNewText,
 }) {
+    const [isLoading, setIsLoading] = useState(false);
     return (
         <BottomMenu $isVisible={isVisible}>
+            {isLoading && <LoadingSmall />}
             <BottomMenuTitle>
                 <ListIcon /> Text List
             </BottomMenuTitle>
@@ -144,6 +149,16 @@ export function MainBottomMenu({
                         </BottomMenuColumn>
                     </BottomTextCell>
                 ))}
+                <BottomTextCell
+                    onClick={async () => {
+                        setIsLoading(true);
+                        await handleNewText();
+                        setIsLoading(false);
+                    }}
+                >
+                    <TextTitle>New Text</TextTitle>
+                    <TextAuthor>Find New Text!</TextAuthor>
+                </BottomTextCell>
             </BottomMenuBody>
         </BottomMenu>
     );
