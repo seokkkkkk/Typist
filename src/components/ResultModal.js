@@ -3,7 +3,6 @@ import { ReactComponent as Download } from "../assets/svg/download.svg";
 import { ReactComponent as Share } from "../assets/svg/share.svg";
 import { ReactComponent as Like } from "../assets/svg/heart.svg";
 import { ReactComponent as Liked } from "../assets/svg/heart_fill.svg";
-import { ReactComponent as Back } from "../assets/svg/cross.svg";
 import { ReactComponent as Logo } from "../assets/svg/logo.svg";
 
 import {
@@ -126,6 +125,28 @@ const ResultBox = styled.div`
     }
 `;
 
+const LogoBox = styled(Logo)`
+    width: 70px;
+    height: 70px;
+    @media (max-width: 450px) {
+        margin-top: 10px;
+        width: 60px;
+        height: 60px;
+    }
+`;
+
+const SmallText = styled.span`
+    @media (max-width: 450px) {
+        font-size: 12px;
+    }
+`;
+const Xmargin = styled.div`
+    height: 20px;
+    @media (max-width: 450px) {
+        height: 20px;
+    }
+`;
+
 export function ResultModal({
     userData,
     data,
@@ -211,27 +232,6 @@ export function ResultModal({
         }
     }, []);
 
-    const LogoBox = styled(Logo)`
-        width: 70px;
-        height: 70px;
-        @media (max-width: 450px) {
-            margin-top: 10px;
-            width: 60px;
-            height: 60px;
-        }
-    `;
-
-    const SmallText = styled.span`
-        @media (max-width: 450px) {
-            font-size: 12px;
-        }
-    `;
-    const Xmargin = styled.div`
-        height: 20px;
-        @media (max-width: 450px) {
-            height: 20px;
-        }
-    `;
     return (
         <ResultContainer
             onKeyDown={handleKeyDown}

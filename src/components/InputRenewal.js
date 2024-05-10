@@ -223,7 +223,7 @@ function InputRenewal({
     const errorEffect = new SoundPlayer([errorSound], 5);
     const spaceEffect = new SoundPlayer([spaceSound], 1.5);
     const deleteEffect = new SoundPlayer([deleteSound], 1.5);
-    const invalidEffect = new SoundPlayer([errorSound], 1);
+    const invalidEffect = new SoundPlayer([invalidSound], 0.3);
 
     function handleInvalid() {
         setIsInvalid(true);
