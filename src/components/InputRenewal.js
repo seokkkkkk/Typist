@@ -4,6 +4,15 @@ import Hangul from "hangul-js";
 import CustomCaretInput from "./CustomCaretInput";
 import { mildShake } from "../utils/animation";
 
+import defaultSound1 from "../assets/sounds/default1.mp3";
+import defaultSound2 from "../assets/sounds/default2.mp3";
+import defaultSound3 from "../assets/sounds/default3.mp3";
+import invalidSound from "../assets/sounds/invalid.mp3";
+import spaceSound from "../assets/sounds/space.mp3";
+import deleteSound from "../assets/sounds/delete.mp3";
+import SoundPlayer from "../utils/SoundPlayer";
+import errorSound from "../assets/sounds/error.mp3";
+
 const TypingWords = styled.div`
     top: 1px;
     position: relative;
@@ -33,6 +42,7 @@ function checkCharacterType(input) {
     const hangulRegex = /[ㄱ-ㅎㅏ-ㅣ가-힣]/;
     const englishRegex = /^[a-zA-Z\s]*$/;
     const specialRegex = /[^\w\s]/;
+    const numberRegex = /[0-9]/;
 
     if (input === "Backspace") {
         return "Backspace";
@@ -40,13 +50,14 @@ function checkCharacterType(input) {
         return "Space";
     } else if (input === "Shift") {
         return "Shift";
+    } else if (input.length !== 1) {
+        return "Unknown";
     } else if (hangulRegex.test(input)) {
         return "Hangul";
     } else if (englishRegex.test(input)) {
-        if (input.length > 1) {
-            return "Trash";
-        }
         return "English";
+    } else if (numberRegex.test(input)) {
+        return "Number";
     } else if (specialRegex.test(input)) {
         return "Special Characters";
     } else {
@@ -205,8 +216,26 @@ function InputRenewal({
         console.log("correct: ", correct);
     }
 
+    const defaultEffect = new SoundPlayer(
+        [defaultSound1, defaultSound2, defaultSound3],
+        3
+    );
+    const errorEffect = new SoundPlayer([errorSound], 5);
+    const spaceEffect = new SoundPlayer([spaceSound], 1.5);
+    const deleteEffect = new SoundPlayer([deleteSound], 1.5);
+    const invalidEffect = new SoundPlayer([invalidSound], 0.3);
+
+    function handleInvalid() {
+        setIsInvalid(true);
+        invalidEffect.play();
+    }
+
+    function handleCorrect() {
+        setCorrect(correct + 1);
+        defaultEffect.play();
+    }
+
     function handleKeyDown(e) {
-        console.log(canType);
         if (!canType) {
             return;
         }
@@ -216,6 +245,7 @@ function InputRenewal({
         switch (checkCharacterType(e.key)) {
             case "Backspace":
                 if (letters.length > 0 || typingPart !== "") {
+                    deleteEffect.play();
                     if (typingPart === "") {
                         setLetters(letters.slice(0, -1));
                         setIndex(index - 1);
@@ -239,31 +269,50 @@ function InputRenewal({
                 break;
             case "Space":
                 if (origin[index] === " ") {
+                    spaceEffect.play();
                     setInputCount(inputCount + 1);
                     if (typingPart !== "") {
                         handleLetterAdd();
                     }
-                    setCorrect(correct + 1);
+                    handleCorrect();
                     setIndex(index + 1);
                     setLetters([...letters, " "]);
                 } else {
-                    setIsInvalid(true);
+                    handleInvalid();
                 }
                 break;
             case "Shift":
                 break;
             case "Hangul":
                 if (checkCharacterType(origin[index]) !== "Hangul") {
-                    setIsInvalid(true);
+                    handleInvalid();
                     break;
                 }
                 if (typingPart === "") {
-                    setIsInput(true);
-                    setTypingPart(e.key);
-                    setInputCount(inputCount + 1);
+                    if (e.key === origin[index]) {
+                        handleCorrect();
+                        setIndex(index + 1);
+                        setInputCount(inputCount + 1);
+                        setIsInput(false);
+                        setLetters([...letters, e.key]);
+                    } else {
+                        if (Hangul.disassemble(origin[index])[0] !== e.key) {
+                            errorEffect.play();
+                            setIsInput(false);
+                            setLetters([...letters, e.key]);
+                            setIndex(index + 1);
+                            setInputCount(inputCount + 1);
+                        } else {
+                            defaultEffect.play();
+                            setIsInput(true);
+                            setTypingPart(e.key);
+                            setInputCount(inputCount + 1);
+                        }
+                    }
                 } else {
                     var newHangul = Hangul.assemble(typingPart + e.key);
                     if (newHangul.length > 1) {
+                        errorEffect.play();
                         setLetters([...letters, typingPart]);
                         setInputCount(inputCount + 1);
                         if (origin[index + 1] === " ") {
@@ -282,8 +331,9 @@ function InputRenewal({
                             setIsInput(false);
                             setInputCount(inputCount + 1);
                             setIndex(index + 1);
-                            setCorrect(correct + 1);
+                            handleCorrect();
                         } else {
+                            defaultEffect.play();
                             setIsInput(true);
                             setTypingPart(newHangul);
                             setInputCount(inputCount + 1);
@@ -291,25 +341,31 @@ function InputRenewal({
                     }
                 }
                 break;
+            case "Number":
             case "Special Characters":
             case "English":
                 if (origin[index] === " ") {
-                    setIsInvalid(true);
+                    handleInvalid();
                     break;
                 }
                 if (typingPart === "") {
-                    if (checkCharacterType(origin[index]) === "Hangul") {
-                        setIsInvalid(true);
+                    if (
+                        checkCharacterType(origin[index]) !==
+                        checkCharacterType(e.key)
+                    ) {
+                        handleInvalid();
                         break;
                     }
                     setLetters([...letters, e.key]);
                     setInputCount(inputCount + 1);
                     if (e.key === origin[index]) {
-                        setCorrect(correct + 1);
+                        handleCorrect();
                     } else {
+                        errorEffect.play();
                     }
                     setIndex(index + 1);
                 } else if (checkCharacterType(origin[index] === "Hangul")) {
+                    errorEffect.play();
                     setLetters([...letters, typingPart]);
                     setTypingPart("");
                     setIsInput(false);
@@ -321,12 +377,14 @@ function InputRenewal({
                     setIndex(index + 2);
                     setInputCount(inputCount + 1);
                     if (e.key === origin[index - 1]) {
-                        setCorrect(correct + 1);
+                        handleCorrect();
                     } else {
+                        errorEffect.play();
                     }
                 }
                 break;
             default:
+                errorEffect.play();
                 break;
         }
     }

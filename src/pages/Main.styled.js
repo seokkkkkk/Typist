@@ -6,7 +6,6 @@ export const MainPage = styled.div`
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     width: 100%;
     height: 100dvh;
 `;
@@ -28,17 +27,26 @@ export const MainLogo = styled.div`
 
 export const MainBody = styled.section`
     display: flex;
-    justify-content: center;
     flex-direction: column;
+    justify-content: start;
     margin: 50px 30px 0 25spx;
 `;
 
 export const Footer = styled.footer`
+    position: absolute;
+    bottom: 10px;
+    width: 95dvw;
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-right: 40px;
     margin-bottom: 20px;
+    @media (max-width: 390px) {
+        width: 90%;
+    }
+    @media (min-width: 1001px) {
+        width: 965px;
+    }
 `;
 
 export const MainHeader = styled.header`

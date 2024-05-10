@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { GivenText } from "../components/GivenText";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { InputRenewal } from "./InputRenewal";
 
 const TextArea = styled.span`
@@ -8,9 +8,27 @@ const TextArea = styled.span`
     margin-left: 40px;
     cursor: text;
     margin-right: 35px;
-    max-height: 30dvh;
     overflow-y: hidden;
     overflow-x: hidden;
+    max-height: 70dvh;
+    @media (max-height: 885px) {
+        max-height: 65dvh;
+    }
+    @media (max-height: 720px) {
+        max-height: 58dvh;
+    }
+    @media (max-height: 630px) {
+        max-height: 54dvh;
+    }
+    @media (max-height: 560px) {
+        max-height: 45dvh;
+    }
+    @media (max-height: 485px) {
+        max-height: 38dvh;
+    }
+    @media (max-height: 460px) {
+        max-height: 35dvh;
+    }
 `;
 
 function TypingArea({
@@ -32,8 +50,20 @@ function TypingArea({
     const [isInput, setIsInput] = useState(false);
     const inputRef = useRef(null);
 
+    const textAreaRef = useRef(null);
+
+    useEffect(() => {
+        if (isInput && inputRef.current) {
+            inputRef.current.scrollIntoView({
+                behavior: "smooth",
+                block: "nearest",
+            });
+        }
+    }, [index, isInput]);
+
     return (
         <TextArea
+            ref={textAreaRef}
             onClick={() => {
                 if (inputRef.current) {
                     inputRef.current.focus();

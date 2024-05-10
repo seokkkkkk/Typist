@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { TextInfo } from "../components/TextInfo";
 import { TypingArea } from "../components/TypingArea";
 import { ResultModal } from "../components/ResultModal";
@@ -16,8 +16,9 @@ import {
     MainLogo,
     MainPage,
 } from "./Main.styled";
-import styled from "styled-components";
 import { LoginModal } from "../components/LoginModal";
+import { EmailVerificationModal } from "../components/EmailVerificationModal";
+import { NicknameModal } from "../components/NicknameModal.js";
 
 export function Main() {
     const [isLike, setIsLike] = useState(false);
@@ -48,7 +49,7 @@ export function Main() {
             author: "정윤석",
             uploader: "yundol",
             link: "https://github.com/seokkkkkk",
-            text: "",
+            text: "10ㅁㅁㅁㅁㅁㅁㅁㅁ20ㅁㅁㅁㅁㅁㅁㅁㅁ30ㅁㅁㅁㅁㅁㅁㅁㅁ40ㅁㅁㅁㅁㅁㅁㅁㅁ50ㅁㅁㅁㅁㅁㅁㅁㅁ60ㅁㅁㅁㅁㅁㅁㅁㅁ70ㅁㅁㅁㅁㅁㅁㅁㅁ80ㅁㅁㅁㅁㅁㅁㅁㅁ90ㅁㅁㅁㅁㅁㅁㅁㅁ100ㅁㅁㅁㅁㅁㅁㅁㅁ10ㅁㅁㅁㅁㅁㅁㅁㅁ20ㅁㅁㅁㅁㅁㅁㅁㅁ30ㅁㅁㅁㅁㅁㅁㅁㅁ40ㅁㅁㅁㅁㅁㅁㅁㅁ50ㅁㅁㅁㅁㅁㅁㅁㅁ60ㅁㅁㅁㅁㅁㅁㅁㅁ70ㅁㅁㅁㅁㅁㅁㅁㅁ80ㅁㅁㅁㅁㅁㅁㅁㅁ90ㅁㅁㅁㅁㅁㅁㅁㅁ200ㅁㅁㅁㅁㅁㅁㅁㅁ10ㅁㅁㅁㅁㅁㅁㅁㅁ20ㅁㅁㅁㅁㅁㅁㅁㅁ30ㅁㅁㅁㅁㅁㅁㅁㅁ40ㅁㅁㅁㅁㅁㅁㅁㅁ50ㅁㅁㅁㅁㅁㅁㅁㅁ60ㅁㅁㅁㅁㅁㅁㅁㅁ70ㅁㅁㅁㅁㅁㅁㅁㅁ80ㅁㅁㅁㅁㅁㅁㅁㅁ90ㅁㅁㅁㅁㅁㅁㅁㅁ300ㅁㅁㅁㅁㅁㅁㅁㅁ10ㅁㅁㅁㅁㅁㅁㅁㅁ20ㅁㅁㅁㅁㅁㅁㅁㅁ30ㅁㅁㅁㅁㅁㅁㅁㅁ40ㅁㅁㅁㅁㅁㅁㅁㅁ50ㅁㅁㅁㅁㅁㅁㅁㅁ60ㅁㅁㅁㅁㅁㅁㅁㅁ70ㅁㅁㅁㅁㅁㅁㅁㅁ80ㅁㅁㅁㅁㅁㅁㅁㅁ90ㅁㅁㅁㅁㅁㅁㅁㅁ400ㅁㅁㅁㅁㅁㅁㅁㅁ10ㅁㅁㅁㅁㅁㅁㅁㅁ20ㅁㅁㅁㅁㅁㅁㅁㅁ30ㅁㅁㅁㅁㅁㅁㅁㅁ40ㅁㅁㅁㅁㅁㅁㅁㅁ50ㅁㅁㅁㅁㅁㅁㅁㅁ60ㅁㅁㅁㅁㅁㅁㅁㅁ70ㅁㅁㅁㅁㅁㅁㅁㅁ80ㅁㅁㅁㅁㅁㅁㅁㅁ90ㅁㅁㅁㅁㅁㅁㅁㅁ500ㅁㅁㅁㅁㅁㅁㅁㅁ10ㅁㅁㅁㅁㅁㅁㅁㅁ20ㅁㅁㅁㅁㅁㅁㅁㅁ30ㅁㅁㅁㅁㅁㅁㅁㅁ40ㅁㅁㅁㅁㅁㅁㅁㅁ50ㅁㅁㅁㅁㅁㅁㅁㅁ60ㅁㅁㅁㅁㅁㅁㅁㅁ70ㅁㅁㅁㅁㅁㅁㅁㅁ80ㅁㅁㅁㅁㅁㅁㅁㅁ90ㅁㅁㅁㅁㅁㅁㅁㅁ600ㅁㅁㅁㅁㅁㅁㅁㅁ10ㅁㅁㅁㅁㅁㅁㅁㅁ20ㅁㅁㅁㅁㅁㅁㅁㅁ30ㅁㅁㅁㅁㅁㅁㅁㅁ40ㅁㅁㅁㅁㅁㅁㅁㅁ50ㅁㅁㅁㅁㅁㅁㅁㅁ60ㅁㅁㅁㅁㅁㅁㅁㅁ70ㅁㅁㅁㅁㅁㅁㅁㅁ80ㅁㅁㅁㅁㅁㅁㅁㅁ90ㅁㅁㅁㅁㅁㅁㅁㅁ700ㅁㅁㅁㅁㅁㅁㅁㅁ10ㅁㅁㅁㅁㅁㅁㅁㅁ20ㅁㅁㅁㅁㅁㅁㅁㅁ30ㅁㅁㅁㅁㅁㅁㅁㅁ40ㅁㅁㅁㅁㅁㅁㅁㅁ50ㅁㅁㅁㅁㅁㅁㅁㅁ60ㅁㅁㅁㅁㅁㅁㅁㅁ70ㅁㅁㅁㅁㅁㅁㅁㅁ80ㅁㅁㅁㅁㅁㅁㅁㅁ90ㅁㅁㅁㅁㅁㅁㅁㅁ800ㅁㅁㅁㅁㅁㅁㅁㅁ10ㅁㅁㅁㅁㅁㅁㅁㅁ20ㅁㅁㅁㅁㅁㅁㅁㅁ30ㅁㅁㅁㅁㅁㅁㅁㅁ40ㅁㅁㅁㅁㅁㅁㅁㅁ50ㅁㅁㅁㅁㅁㅁㅁㅁ60ㅁㅁㅁㅁㅁㅁㅁㅁ70ㅁㅁㅁㅁㅁㅁㅁㅁ80ㅁㅁㅁㅁㅁㅁㅁㅁ90ㅁㅁㅁㅁㅁㅁㅁㅁ900ㅁㅁㅁㅁㅁㅁㅁㅁ10ㅁㅁㅁㅁㅁㅁㅁㅁ20ㅁㅁㅁㅁㅁㅁㅁㅁ30ㅁㅁㅁㅁㅁㅁㅁㅁ40ㅁㅁㅁㅁㅁㅁㅁㅁ50ㅁㅁㅁㅁㅁㅁㅁㅁ60ㅁㅁㅁㅁㅁㅁㅁㅁ70ㅁㅁㅁㅁㅁㅁㅁㅁ80ㅁㅁㅁㅁㅁㅁㅁㅁ90ㅁㅁㅁㅁㅁㅁㅁㅁ1000ㅁㅁㅁㅁㅁㅁㅁㅁ10ㅁㅁㅁㅁㅁㅁㅁㅁ20ㅁㅁㅁㅁㅁㅁㅁㅁ30ㅁㅁㅁㅁㅁㅁㅁㅁ40ㅁㅁㅁㅁㅁㅁㅁㅁ50ㅁㅁㅁㅁㅁㅁㅁㅁ60ㅁㅁㅁㅁㅁㅁㅁㅁ70ㅁㅁㅁㅁㅁㅁㅁㅁ80ㅁㅁㅁㅁㅁㅁㅁㅁ90ㅁㅁㅁㅁㅁㅁㅁㅁ1100ㅁㅁㅁㅁㅁㅁㅁㅁ10ㅁㅁㅁㅁㅁㅁㅁㅁ20ㅁㅁㅁㅁㅁㅁㅁㅁ30ㅁㅁㅁㅁㅁㅁㅁㅁ40ㅁㅁㅁㅁㅁㅁㅁㅁ50ㅁㅁㅁㅁㅁㅁㅁㅁ60ㅁㅁㅁㅁㅁㅁㅁㅁ70ㅁㅁㅁㅁㅁㅁㅁㅁ80ㅁㅁㅁㅁㅁㅁㅁㅁ90ㅁㅁㅁㅁㅁㅁㅁㅁ1200ㅁㅁㅁㅁㅁㅁㅁㅁ10ㅁㅁㅁㅁㅁㅁㅁㅁ20ㅁㅁㅁㅁㅁㅁㅁㅁ30ㅁㅁㅁㅁㅁㅁㅁㅁ40ㅁㅁㅁㅁㅁㅁㅁㅁ50ㅁㅁㅁㅁㅁㅁㅁㅁ60ㅁㅁㅁㅁㅁㅁㅁㅁ70ㅁㅁㅁㅁㅁㅁㅁㅁ80ㅁㅁㅁㅁㅁㅁㅁㅁ90ㅁㅁㅁㅁㅁㅁㅁㅁ1300",
             id: 1,
         },
         {
@@ -56,7 +57,7 @@ export function Main() {
             author: "정지원",
             uploader: "yundol",
             link: "https://github.com/seokkkkkk",
-            text: "오늘은 날씨가 춥다 오늘은 날씨가 춥다 오늘은 날씨가 춥다",
+            text: "ㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁ",
             id: 2,
         },
         {
@@ -64,7 +65,7 @@ export function Main() {
             author: "정윤석",
             uploader: "yundol",
             link: "https://github.com/seokkkkkk",
-            text: "오늘은 날씨가 좋다.",
+            text: "QWER qwer ㅂㅈㄷㄱ 1234 ₩!@#$%^&*()_+{}|\":?><.,/;'[]\\=-",
             id: 1,
         },
         {
@@ -214,55 +215,52 @@ export function Main() {
 
     return (
         <MainPage>
-            <div
+            <MainLogo
                 onClick={() => {
                     handleMenuClose();
                 }}
             >
-                <MainLogo>
-                    <Logo />
-                    <MainHeader>Typist</MainHeader>
-                </MainLogo>
-                <MainBody>
-                    <MainMenuBar
-                        acc={acc}
-                        cpm={cpm}
-                        currentTextIndex={currentTextIndex}
-                        err={err}
-                        handleCurrentText={handleCurrentText}
-                        handleReload={handleReload}
-                        handleMenuOpen={handleRightMenuOpen}
-                        isLoading={isLoading}
-                        texts={texts}
-                        totalTime={totalTime}
-                        isLike={isLike}
-                        handleLike={handleLike}
-                    />
-                    {!isLoading && (
-                        <TypingArea
-                            canType={canType}
-                            setCanType={setCanType}
-                            key={reloadKey}
-                            setAcc={setAcc}
-                            setErr={setErr}
-                            setCpm={setCpm}
-                            totalTime={totalTime}
-                            setTotalTime={setTotalTime}
-                            reload={reload}
-                            setReload={setReload}
-                            setResultOpen={setResultReady}
-                            setResult={setResult}
-                            setData={setData}
-                            text={currentText.text}
-                        />
-                    )}
-                </MainBody>
-            </div>
-            <YSpace
+                <Logo />
+                <MainHeader>Typist</MainHeader>
+            </MainLogo>
+            <MainBody
                 onClick={() => {
                     handleMenuClose();
                 }}
-            />
+            >
+                <MainMenuBar
+                    acc={acc}
+                    cpm={cpm}
+                    currentTextIndex={currentTextIndex}
+                    err={err}
+                    handleCurrentText={handleCurrentText}
+                    handleReload={handleReload}
+                    handleMenuOpen={handleRightMenuOpen}
+                    isLoading={isLoading}
+                    texts={texts}
+                    totalTime={totalTime}
+                    isLike={isLike}
+                    handleLike={handleLike}
+                />
+                {!isLoading && (
+                    <TypingArea
+                        canType={canType}
+                        setCanType={setCanType}
+                        key={reloadKey}
+                        setAcc={setAcc}
+                        setErr={setErr}
+                        setCpm={setCpm}
+                        totalTime={totalTime}
+                        setTotalTime={setTotalTime}
+                        reload={reload}
+                        setReload={setReload}
+                        setResultOpen={setResultReady}
+                        setResult={setResult}
+                        setData={setData}
+                        text={currentText.text}
+                    />
+                )}
+            </MainBody>
             <Footer>
                 {!isLoading && (
                     <TextInfo
@@ -302,11 +300,8 @@ export function Main() {
             {loginModalOpen && (
                 <LoginModal setLoginModalOpen={setLoginModalOpen} />
             )}
+            {/* <EmailVerificationModal /> */}
+            {/* <NicknameModal /> */}
         </MainPage>
     );
 }
-
-const YSpace = styled.div`
-    height: 100%;
-    width: 100%;
-`;

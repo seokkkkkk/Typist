@@ -3,7 +3,6 @@ import { ReactComponent as Download } from "../assets/svg/download.svg";
 import { ReactComponent as Share } from "../assets/svg/share.svg";
 import { ReactComponent as Like } from "../assets/svg/heart.svg";
 import { ReactComponent as Liked } from "../assets/svg/heart_fill.svg";
-import { ReactComponent as Back } from "../assets/svg/cross.svg";
 import { ReactComponent as Logo } from "../assets/svg/logo.svg";
 
 import {
@@ -102,7 +101,8 @@ const ResultTitle = styled.div`
 const ResultContainer = styled.div`
     z-index: 100;
     position: absolute;
-    width: 100%;
+    left: -50%;
+    width: 200%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.3);
 `;
@@ -122,6 +122,28 @@ const ResultBox = styled.div`
     @media (max-width: 450px) {
         width: 360px;
         height: 640px;
+    }
+`;
+
+const LogoBox = styled(Logo)`
+    width: 70px;
+    height: 70px;
+    @media (max-width: 450px) {
+        margin-top: 10px;
+        width: 60px;
+        height: 60px;
+    }
+`;
+
+const SmallText = styled.span`
+    @media (max-width: 450px) {
+        font-size: 12px;
+    }
+`;
+const Xmargin = styled.div`
+    height: 20px;
+    @media (max-width: 450px) {
+        height: 20px;
     }
 `;
 
@@ -210,27 +232,6 @@ export function ResultModal({
         }
     }, []);
 
-    const LogoBox = styled(Logo)`
-        width: 70px;
-        height: 70px;
-        @media (max-width: 450px) {
-            margin-top: 10px;
-            width: 60px;
-            height: 60px;
-        }
-    `;
-
-    const SmallText = styled.span`
-        @media (max-width: 450px) {
-            font-size: 12px;
-        }
-    `;
-    const Xmargin = styled.div`
-        height: 20px;
-        @media (max-width: 450px) {
-            height: 20px;
-        }
-    `;
     return (
         <ResultContainer
             onKeyDown={handleKeyDown}
