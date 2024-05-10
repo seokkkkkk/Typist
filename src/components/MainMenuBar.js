@@ -57,6 +57,7 @@ export function MainMenuBar({
     texts,
     isLike,
     handleLike,
+    handleNewText,
 }) {
     return (
         <MenuBar>
@@ -89,7 +90,10 @@ export function MainMenuBar({
                 </MenuIcon>
                 <MenuIcon>
                     <Right
-                        onClick={() => handleCurrentText({ indexDiff: 1 })}
+                        onClick={() => {
+                            handleCurrentText({ indexDiff: 1 });
+                            handleNewText();
+                        }}
                         aria-label="다음 글"
                         width="15px"
                         height="20px"
