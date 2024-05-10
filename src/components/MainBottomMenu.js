@@ -160,6 +160,16 @@ export function MainBottomMenu({
                     <TextAuthor>Find New Text!</TextAuthor>
                 </BottomTextCell>
             </BottomMenuBody>
+            <Footer>
+                Copyright (c) 2015, NAVER Corporation
+                (http://www.navercorp.com), with Reserved Font Name D2Coding.
+            </Footer>
         </BottomMenu>
     );
 }
+const Footer = styled.footer`
+    position: absolute;
+    bottom: 10px;
+    font-size: 10px;
+    color: #d3d3d3;
+`;

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { InputRenewal } from "./InputRenewal";
 
 const TextArea = styled.span`
+    font-family: "D2Coding";
     margin-top: 10px;
     margin-left: 40px;
     cursor: text;
@@ -45,16 +46,14 @@ function TypingArea({
     setResult,
     setData,
     text,
+    inputFocus,
 }) {
     const [index, setIndex] = useState(0);
     const [isInput, setIsInput] = useState(false);
-    const inputRef = useRef(null);
-
-    const textAreaRef = useRef(null);
 
     useEffect(() => {
-        if (isInput && inputRef.current) {
-            inputRef.current.scrollIntoView({
+        if (isInput && inputFocus.current) {
+            inputFocus.current.scrollIntoView({
                 behavior: "smooth",
                 block: "nearest",
             });
@@ -63,10 +62,9 @@ function TypingArea({
 
     return (
         <TextArea
-            ref={textAreaRef}
             onClick={() => {
-                if (inputRef.current) {
-                    inputRef.current.focus();
+                if (inputFocus.current) {
+                    inputFocus.current.focus();
                 }
             }}
         >
@@ -77,7 +75,7 @@ function TypingArea({
                 index={index}
                 setIndex={setIndex}
                 setIsInput={setIsInput}
-                inputRef={inputRef}
+                inputFocus={inputFocus}
                 setAcc={setAcc}
                 setErr={setErr}
                 setCpm={setCpm}

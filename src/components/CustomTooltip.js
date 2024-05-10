@@ -23,7 +23,7 @@ const TooltipContent = styled.p`
     justify-content: center;
 `;
 
-const TooltipLabel = styled.label`
+const TooltipLabel = styled.span`
     font-size: 10px;
     font-weight: 300;
 `;

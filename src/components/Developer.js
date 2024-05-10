@@ -40,7 +40,7 @@ const DeveloperName = styled.div`
     align-items: center;
 `;
 
-const DeveloperLabel = styled.label`
+const DeveloperLabel = styled.span`
     font-size: 12px;
     font-weight: 1000;
 `;

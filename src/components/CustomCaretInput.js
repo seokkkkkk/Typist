@@ -8,7 +8,9 @@ const CustomCaret = styled.div`
     width: 0px;
     height: 17px;
     border-left: 4px solid
-        ${(props) => (props.$isInvalid ? "red" : "rgba(0, 0, 0, 0.3)")};
+        ${(props) =>
+            props.$isFocused &&
+            (props.$isInvalid ? "red" : "rgba(0, 0, 0, 0.3)")};
     right: ${(props) => props.position || "1px"};
     top: 2px;
     animation: ${blinkCaret} 1s steps(1) infinite,
@@ -37,36 +39,41 @@ const CustomInput = styled.input`
     margin-bottom: 8px;
 `;
 
-const CustomCaretInput = React.forwardRef(
-    ({ onKeyDown, value, isInvalid, setIsInvalid }, ref) => {
-        // Set to reset isInvalid and isWrong after the animation completes
-        useEffect(() => {
-            if (isInvalid) {
-                const timer = setTimeout(() => {
-                    setIsInvalid(false);
-                }, 820); // The longest animation duration plus a small buffer
-                return () => clearTimeout(timer);
-            }
-        }, [isInvalid, setIsInvalid]);
+const CustomCaretInput = ({
+    onKeyDown,
+    value,
+    isInvalid,
+    setIsInvalid,
+    inputFocus,
+}) => {
+    // Set to reset isInvalid and isWrong after the animation completes
+    useEffect(() => {
+        if (isInvalid) {
+            const timer = setTimeout(() => {
+                setIsInvalid(false);
+            }, 820); // The longest animation duration plus a small buffer
+            return () => clearTimeout(timer);
+        }
+    }, [isInvalid, setIsInvalid]);
 
-        return (
-            <>
-                <CustomCaret $isInvalid={isInvalid} />
-                <CustomInput
-                    ref={ref}
-                    type="text"
-                    value={value}
-                    onKeyDown={onKeyDown}
-                    onChange={() => {}}
-                    autoComplete="off"
-                    autoCapitalize="off"
-                    autoCorrect="off"
-                    spellCheck="false"
-                    autoFocus
-                />
-            </>
-        );
-    }
-);
+    return (
+        <>
+            <CustomCaret $isInvalid={isInvalid} $isFocused={false} />
+            <CustomInput
+                name="typing-area"
+                ref={inputFocus}
+                type="text"
+                value={value}
+                onKeyDown={onKeyDown}
+                onChange={() => {}}
+                autoComplete="off"
+                autoCapitalize="off"
+                autoCorrect="off"
+                spellCheck="false"
+                autoFocus
+            />
+        </>
+    );
+};
 
 export default CustomCaretInput;

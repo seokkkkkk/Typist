@@ -14,7 +14,7 @@ const KakaoContainer = styled.div`
     display: flex;
     padding: 10px 14px;
 `;
-const KakaoLabel = styled.label`
+const KakaoLabel = styled.span`
     color: #000000 85%;
     font-size: 14px;
 `;

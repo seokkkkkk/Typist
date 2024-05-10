@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { TextInfo } from "../components/TextInfo";
 import { TypingArea } from "../components/TypingArea";
 import { ResultModal } from "../components/ResultModal";
@@ -9,7 +9,6 @@ import { getCookie, setCookie } from "../utils/TypistCookie";
 import { EndOfText } from "../components/EndAlert";
 import {
     Footer,
-    List,
     Logo,
     MainBody,
     MainHeader,
@@ -22,8 +21,7 @@ import { EmailVerificationModal } from "../components/EmailVerificationModal";
 import { NicknameModal } from "../components/NicknameModal.js";
 import AdviceAPI from "../api/AdviceAPI.js";
 import { Loading } from "../components/Loading.js";
-import styled from "styled-components";
-
+import { useDetect } from "../hook/useDetect.js";
 export function Main() {
     const [isLike, setIsLike] = useState(false);
     const [totalTime, setTotalTime] = useState(null);
@@ -51,7 +49,10 @@ export function Main() {
     const [userData, setUserData] = useState({
         name: "yundol",
     });
-
+    const inputFocus = useRef();
+    const resultRef = useRef();
+    //제스처 디텍터(사운드 플레이 위함)
+    useDetect();
     async function getTexts(retryCount = 0) {
         if (retryCount >= 5) {
             console.error(
@@ -154,6 +155,7 @@ export function Main() {
         setData([{ time: "00:00", cpm: 0, acc: 100, err: 0 }]);
         setTotalTime(null);
         setReload(true);
+        inputFocus.current.focus();
     }
 
     function handleCloseResult() {
@@ -164,6 +166,7 @@ export function Main() {
         if (texts.length > currentTextIndex + 1)
             setCurrentTextIndex(currentTextIndex + 1);
         else setOpenAlert(true);
+        inputFocus.current.focus();
     }
 
     function handleCurrentText({ indexDiff }) {
@@ -190,6 +193,10 @@ export function Main() {
 
     function handleRightMenuOpen() {
         setRightMenuOpen(!rightMenuOpen);
+    }
+
+    function handleBottomMenuOpen() {
+        setBottomMenuOpen(!bottomMenuOpen);
     }
 
     function handleMenuClose() {
@@ -238,6 +245,7 @@ export function Main() {
                         isLike={isLike}
                         handleLike={handleLike}
                         handleNewText={handleNewText}
+                        handleBottomMenuOpen={handleBottomMenuOpen}
                     />
                 )}
                 {!isLoading && currentText && (
@@ -256,6 +264,7 @@ export function Main() {
                         setResult={setResult}
                         setData={setData}
                         text={currentText.text}
+                        inputFocus={inputFocus}
                     />
                 )}
             </MainBody>
@@ -271,7 +280,6 @@ export function Main() {
                         uploader={currentText.uploader}
                     />
                 )}
-                {!isLoading && <List onClick={() => setBottomMenuOpen(true)} />}
             </Footer>
             <RightMenu
                 userData={userData}
@@ -281,6 +289,7 @@ export function Main() {
             />
             {resultModal && (
                 <ResultModal
+                    resultRef={resultRef}
                     userData={userData}
                     data={resultData}
                     result={result}
