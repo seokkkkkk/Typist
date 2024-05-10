@@ -4,6 +4,15 @@ import Hangul from "hangul-js";
 import CustomCaretInput from "./CustomCaretInput";
 import { mildShake } from "../utils/animation";
 
+import defaultSound1 from "../assets/sounds/default1.mp3";
+import defaultSound2 from "../assets/sounds/default2.mp3";
+import defaultSound3 from "../assets/sounds/default3.mp3";
+import invalidSound from "../assets/sounds/invalid.mp3";
+import spaceSound from "../assets/sounds/space.mp3";
+import deleteSound from "../assets/sounds/delete.mp3";
+import SoundPlayer from "../utils/SoundPlayer";
+import errorSound from "../assets/sounds/error.mp3";
+
 const TypingWords = styled.div`
     top: 1px;
     position: relative;
@@ -207,6 +216,25 @@ function InputRenewal({
         console.log("correct: ", correct);
     }
 
+    const defaultEffect = new SoundPlayer(
+        [defaultSound1, defaultSound2, defaultSound3],
+        3
+    );
+    const errorEffect = new SoundPlayer([errorSound], 5);
+    const spaceEffect = new SoundPlayer([spaceSound], 1.5);
+    const deleteEffect = new SoundPlayer([deleteSound], 1.5);
+    const invalidEffect = new SoundPlayer([errorSound], 1);
+
+    function handleInvalid() {
+        setIsInvalid(true);
+        invalidEffect.play();
+    }
+
+    function handleCorrect() {
+        setCorrect(correct + 1);
+        defaultEffect.play();
+    }
+
     function handleKeyDown(e) {
         if (!canType) {
             return;
@@ -217,6 +245,7 @@ function InputRenewal({
         switch (checkCharacterType(e.key)) {
             case "Backspace":
                 if (letters.length > 0 || typingPart !== "") {
+                    deleteEffect.play();
                     if (typingPart === "") {
                         setLetters(letters.slice(0, -1));
                         setIndex(index - 1);
@@ -240,39 +269,50 @@ function InputRenewal({
                 break;
             case "Space":
                 if (origin[index] === " ") {
+                    spaceEffect.play();
                     setInputCount(inputCount + 1);
                     if (typingPart !== "") {
                         handleLetterAdd();
                     }
-                    setCorrect(correct + 1);
+                    handleCorrect();
                     setIndex(index + 1);
                     setLetters([...letters, " "]);
                 } else {
-                    setIsInvalid(true);
+                    handleInvalid();
                 }
                 break;
             case "Shift":
                 break;
             case "Hangul":
                 if (checkCharacterType(origin[index]) !== "Hangul") {
-                    setIsInvalid(true);
+                    handleInvalid();
                     break;
                 }
                 if (typingPart === "") {
                     if (e.key === origin[index]) {
-                        setCorrect(correct + 1);
+                        handleCorrect();
                         setIndex(index + 1);
                         setInputCount(inputCount + 1);
                         setIsInput(false);
                         setLetters([...letters, e.key]);
                     } else {
-                        setIsInput(true);
-                        setTypingPart(e.key);
-                        setInputCount(inputCount + 1);
+                        if (Hangul.disassemble(origin[index])[0] !== e.key) {
+                            errorEffect.play();
+                            setIsInput(false);
+                            setLetters([...letters, e.key]);
+                            setIndex(index + 1);
+                            setInputCount(inputCount + 1);
+                        } else {
+                            defaultEffect.play();
+                            setIsInput(true);
+                            setTypingPart(e.key);
+                            setInputCount(inputCount + 1);
+                        }
                     }
                 } else {
                     var newHangul = Hangul.assemble(typingPart + e.key);
                     if (newHangul.length > 1) {
+                        errorEffect.play();
                         setLetters([...letters, typingPart]);
                         setInputCount(inputCount + 1);
                         if (origin[index + 1] === " ") {
@@ -291,8 +331,9 @@ function InputRenewal({
                             setIsInput(false);
                             setInputCount(inputCount + 1);
                             setIndex(index + 1);
-                            setCorrect(correct + 1);
+                            handleCorrect();
                         } else {
+                            defaultEffect.play();
                             setIsInput(true);
                             setTypingPart(newHangul);
                             setInputCount(inputCount + 1);
@@ -304,7 +345,7 @@ function InputRenewal({
             case "Special Characters":
             case "English":
                 if (origin[index] === " ") {
-                    setIsInvalid(true);
+                    handleInvalid();
                     break;
                 }
                 if (typingPart === "") {
@@ -312,17 +353,19 @@ function InputRenewal({
                         checkCharacterType(origin[index]) !==
                         checkCharacterType(e.key)
                     ) {
-                        setIsInvalid(true);
+                        handleInvalid();
                         break;
                     }
                     setLetters([...letters, e.key]);
                     setInputCount(inputCount + 1);
                     if (e.key === origin[index]) {
-                        setCorrect(correct + 1);
+                        handleCorrect();
                     } else {
+                        errorEffect.play();
                     }
                     setIndex(index + 1);
                 } else if (checkCharacterType(origin[index] === "Hangul")) {
+                    errorEffect.play();
                     setLetters([...letters, typingPart]);
                     setTypingPart("");
                     setIsInput(false);
@@ -334,12 +377,14 @@ function InputRenewal({
                     setIndex(index + 2);
                     setInputCount(inputCount + 1);
                     if (e.key === origin[index - 1]) {
-                        setCorrect(correct + 1);
+                        handleCorrect();
                     } else {
+                        errorEffect.play();
                     }
                 }
                 break;
             default:
+                errorEffect.play();
                 break;
         }
     }
