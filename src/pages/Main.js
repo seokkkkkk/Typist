@@ -71,7 +71,12 @@ export function Main() {
                     uploader: "Advice Slip",
                 };
                 if (!texts.some((t) => t.id === text.id)) {
-                    setTexts((prevTexts) => [...prevTexts, text]);
+                    const newTexts = [...texts, text];
+                    if (newTexts.length > 5) {
+                        newTexts.shift();
+                        setCurrentTextIndex((prevIndex) => prevIndex - 1);
+                    }
+                    setTexts(newTexts);
                 } else {
                     getTexts(retryCount + 1); // Recursive call with incremented retry count
                 }
@@ -98,10 +103,6 @@ export function Main() {
     }, []);
 
     async function handleNewText() {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        if (texts.length >= 8) {
-            texts.shift();
-        }
         getTexts();
     }
 

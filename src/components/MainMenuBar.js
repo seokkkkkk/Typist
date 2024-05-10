@@ -56,7 +56,6 @@ export function MainMenuBar({
     handleMenuOpen,
     handleBottomMenuOpen,
     currentTextIndex,
-    texts,
     isLike,
     handleLike,
     handleNewText,
@@ -99,11 +98,7 @@ export function MainMenuBar({
                         aria-label="다음 글"
                         width="15px"
                         height="20px"
-                        fill={
-                            currentTextIndex < texts.length - 1
-                                ? "gray"
-                                : "lightgray"
-                        }
+                        fill={"gray"}
                     />
                 </MenuIcon>
                 <MenuIcon>

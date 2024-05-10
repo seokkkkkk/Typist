@@ -103,7 +103,6 @@ function InputRenewal({
     const spaceEffect = new SoundPlayer([spaceSound], 1.5);
     const deleteEffect = new SoundPlayer([deleteSound], 1.5);
     const invalidEffect = new SoundPlayer([invalidSound], 0.3);
-    const emptyEffect = new SoundPlayer([errorSound], 0);
 
     useEffect(() => {
         if (isTypingStarted) {
