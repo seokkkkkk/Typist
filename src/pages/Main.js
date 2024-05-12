@@ -94,9 +94,6 @@ export function Main() {
             setIsLoading(true); // Start loading
             await getTexts(); // Wait for the first fetch to complete
             setIsLoading(false); // End loading after the second fetch completes
-            setTimeout(async () => {
-                await getTexts(); // After 2 seconds, fetch again
-            }, 2000);
         };
 
         loadInitialTexts();
