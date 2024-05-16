@@ -14,7 +14,7 @@ const BottomText = styled.span`
 const TextUploader = styled(BottomText)`
     font-size: 12px;
     color: gray;
-    @media (max-width: 550px) {
+    @media (max-width: 768px) {
         font-size: 10px;
     }
 `;
@@ -22,7 +22,7 @@ const TextUploader = styled(BottomText)`
 const TextAuthor = styled(BottomText)`
     font-size: 12px;
     color: gray;
-    @media (max-width: 550px) {
+    @media (max-width: 768px) {
         font-size: 10px;
     }
 `;
@@ -35,7 +35,7 @@ const TextTitle = styled(BottomText)`
     justify-content: center;
     align-items: center;
     flex-direction: row;
-    @media (max-width: 550px) {
+    @media (max-width: 768px) {
         flex-direction: column;
         font-size: 14px;
     }
@@ -75,7 +75,7 @@ const BottomTextCell = styled.div`
     border-radius: 10px;
     cursor: pointer;
     width: 88%;
-    @media (max-width: 550px) {
+    @media (max-width: 768px) {
         padding: 5px 6px 0px 6px;
     }
 `;
@@ -174,4 +174,10 @@ const Footer = styled.footer`
     bottom: 10px;
     font-size: 10px;
     color: #d3d3d3;
+    @media (max-width: 768px) {
+        font-size: 6px;
+    }
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 `;
