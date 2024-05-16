@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const Char = styled.span.attrs((props) => ({
     style: {
-        fontSize: "20px",
+        fontSize: "24px",
         minWidth: "6px",
         display: "inline-block",
         color: props.$isTyping ? "transparent" : "gray",

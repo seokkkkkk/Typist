@@ -221,7 +221,7 @@ export function ResultModal({
         }
     };
     function handleKeyDown(e) {
-        if (e.key === "Escape") {
+        if (e.key === "Escape" || e.key === "Enter" || e.key === " ") {
             handleCloseResult();
         }
     }
@@ -234,6 +234,7 @@ export function ResultModal({
 
     return (
         <ResultContainer
+            ref={(ref) => ref && ref.focus()}
             onKeyDown={handleKeyDown}
             onClick={() => handleCloseResult()}
             tabIndex="0"

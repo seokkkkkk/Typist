@@ -10,3 +10,8 @@ body {
         padding: 0 20px; /* 좌우 패딩 추가 */
     }
 }
+@font-face {
+    font-family: "D2Coding";
+    font-weight: normal;
+    src: url("../fonts/D2Coding.ttf") format("truetype");
+}

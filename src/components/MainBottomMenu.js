@@ -2,6 +2,8 @@ import styled from "styled-components";
 
 import { ReactComponent as List } from "../assets/svg/features.svg";
 import { slideInFromBottom, slideOutToBottom } from "../utils/animation";
+import { useEffect, useRef, useState } from "react";
+import { LoadingSmall } from "./Loading";
 
 const BottomText = styled.span`
     white-space: nowrap;
@@ -116,9 +118,12 @@ export function MainBottomMenu({
     onSelectText,
     currentTextIndex,
     isVisible,
+    handleNewText,
 }) {
+    const [isLoading, setIsLoading] = useState(false);
     return (
         <BottomMenu $isVisible={isVisible}>
+            {isLoading && <LoadingSmall />}
             <BottomMenuTitle>
                 <ListIcon /> Text List
             </BottomMenuTitle>
@@ -144,7 +149,29 @@ export function MainBottomMenu({
                         </BottomMenuColumn>
                     </BottomTextCell>
                 ))}
+                <BottomTextCell
+                    onClick={async () => {
+                        setIsLoading(true);
+                        //handleNewText()  함수가 끝날 때까지 기다림
+                        await handleNewText().then(() => {
+                            setIsLoading(false);
+                        });
+                    }}
+                >
+                    <TextTitle>New Text</TextTitle>
+                    <TextAuthor>Find New Text!</TextAuthor>
+                </BottomTextCell>
             </BottomMenuBody>
+            <Footer>
+                Copyright (c) 2015, NAVER Corporation
+                (http://www.navercorp.com), with Reserved Font Name D2Coding.
+            </Footer>
         </BottomMenu>
     );
 }
+const Footer = styled.footer`
+    position: absolute;
+    bottom: 10px;
+    font-size: 10px;
+    color: #d3d3d3;
+`;

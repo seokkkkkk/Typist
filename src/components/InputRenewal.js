@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import Hangul from "hangul-js";
+import Hangul, { d } from "hangul-js";
 import CustomCaretInput from "./CustomCaretInput";
 import { mildShake } from "../utils/animation";
 
@@ -21,7 +21,7 @@ const TypingWords = styled.div`
 `;
 
 const Char = styled.span`
-    font-size: 20px;
+    font-size: 24px;
     min-width: 6px;
     color: gray;
     display: inline-block;
@@ -72,7 +72,7 @@ function InputRenewal({
     index,
     setIndex,
     setIsInput,
-    inputRef,
+    inputFocus,
     setCpm,
     setAcc,
     setErr,
@@ -95,6 +95,15 @@ function InputRenewal({
 
     const [isInvalid, setIsInvalid] = useState(false);
 
+    const defaultEffect = new SoundPlayer(
+        [defaultSound1, defaultSound2, defaultSound3],
+        3
+    );
+    const errorEffect = new SoundPlayer([errorSound], 5);
+    const spaceEffect = new SoundPlayer([spaceSound], 1.5);
+    const deleteEffect = new SoundPlayer([deleteSound], 1.5);
+    const invalidEffect = new SoundPlayer([invalidSound], 0.3);
+
     useEffect(() => {
         if (isTypingStarted) {
             // 타이머 시작
@@ -115,23 +124,6 @@ function InputRenewal({
             clearInterval(timerRef.current);
         }
     }, [reload, setReload]);
-
-    useEffect(() => {
-        if (letters.length === origin.length) {
-            setResult([inputCount, letters.length]);
-            clearInterval(timerRef.current);
-            setCanType(false);
-            setResultOpen(true);
-        }
-    }, [
-        letters,
-        origin,
-        setResultOpen,
-        setReload,
-        setResult,
-        inputCount,
-        setCanType,
-    ]);
 
     useEffect(() => {
         if (letters.length === origin.length) {
@@ -216,15 +208,6 @@ function InputRenewal({
         console.log("correct: ", correct);
     }
 
-    const defaultEffect = new SoundPlayer(
-        [defaultSound1, defaultSound2, defaultSound3],
-        3
-    );
-    const errorEffect = new SoundPlayer([errorSound], 5);
-    const spaceEffect = new SoundPlayer([spaceSound], 1.5);
-    const deleteEffect = new SoundPlayer([deleteSound], 1.5);
-    const invalidEffect = new SoundPlayer([invalidSound], 0.3);
-
     function handleInvalid() {
         setIsInvalid(true);
         invalidEffect.play();
@@ -282,6 +265,7 @@ function InputRenewal({
                 }
                 break;
             case "Shift":
+                defaultEffect.play();
                 break;
             case "Hangul":
                 if (checkCharacterType(origin[index]) !== "Hangul") {
@@ -399,11 +383,12 @@ function InputRenewal({
                 )
             )}
             <CustomCaretInput
-                ref={inputRef}
+                inputFocus={inputFocus}
                 onKeyDown={handleKeyDown}
                 value={typingPart}
                 setIsInvalid={setIsInvalid}
                 isInvalid={isInvalid}
+                autoFocus
             />
         </TypingWords>
     );

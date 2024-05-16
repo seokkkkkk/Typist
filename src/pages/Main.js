@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { TextInfo } from "../components/TextInfo";
 import { TypingArea } from "../components/TypingArea";
 import { ResultModal } from "../components/ResultModal";
@@ -9,17 +9,19 @@ import { getCookie, setCookie } from "../utils/TypistCookie";
 import { EndOfText } from "../components/EndAlert";
 import {
     Footer,
-    List,
     Logo,
     MainBody,
     MainHeader,
     MainLogo,
     MainPage,
+    RemainingArea,
 } from "./Main.styled";
 import { LoginModal } from "../components/LoginModal";
 import { EmailVerificationModal } from "../components/EmailVerificationModal";
 import { NicknameModal } from "../components/NicknameModal.js";
-
+import AdviceAPI from "../api/AdviceAPI.js";
+import { Loading } from "../components/Loading.js";
+import { useDetect } from "../hook/useDetect.js";
 export function Main() {
     const [isLike, setIsLike] = useState(false);
     const [totalTime, setTotalTime] = useState(null);
@@ -41,74 +43,70 @@ export function Main() {
     ]);
     const [resultData, setResultData] = useState([]);
     const [loginModalOpen, setLoginModalOpen] = useState(false);
-    // 웹 500자
-    // 모바일 120자
-    const [texts, setTexts] = useState([
-        {
-            title: "나의 일기",
-            author: "정윤석",
-            uploader: "yundol",
-            link: "https://github.com/seokkkkkk",
-            text: "10ㅁㅁㅁㅁㅁㅁㅁㅁ20ㅁㅁㅁㅁㅁㅁㅁㅁ30ㅁㅁㅁㅁㅁㅁㅁㅁ40ㅁㅁㅁㅁㅁㅁㅁㅁ50ㅁㅁㅁㅁㅁㅁㅁㅁ60ㅁㅁㅁㅁㅁㅁㅁㅁ70ㅁㅁㅁㅁㅁㅁㅁㅁ80ㅁㅁㅁㅁㅁㅁㅁㅁ90ㅁㅁㅁㅁㅁㅁㅁㅁ100ㅁㅁㅁㅁㅁㅁㅁㅁ10ㅁㅁㅁㅁㅁㅁㅁㅁ20ㅁㅁㅁㅁㅁㅁㅁㅁ30ㅁㅁㅁㅁㅁㅁㅁㅁ40ㅁㅁㅁㅁㅁㅁㅁㅁ50ㅁㅁㅁㅁㅁㅁㅁㅁ60ㅁㅁㅁㅁㅁㅁㅁㅁ70ㅁㅁㅁㅁㅁㅁㅁㅁ80ㅁㅁㅁㅁㅁㅁㅁㅁ90ㅁㅁㅁㅁㅁㅁㅁㅁ200ㅁㅁㅁㅁㅁㅁㅁㅁ10ㅁㅁㅁㅁㅁㅁㅁㅁ20ㅁㅁㅁㅁㅁㅁㅁㅁ30ㅁㅁㅁㅁㅁㅁㅁㅁ40ㅁㅁㅁㅁㅁㅁㅁㅁ50ㅁㅁㅁㅁㅁㅁㅁㅁ60ㅁㅁㅁㅁㅁㅁㅁㅁ70ㅁㅁㅁㅁㅁㅁㅁㅁ80ㅁㅁㅁㅁㅁㅁㅁㅁ90ㅁㅁㅁㅁㅁㅁㅁㅁ300ㅁㅁㅁㅁㅁㅁㅁㅁ10ㅁㅁㅁㅁㅁㅁㅁㅁ20ㅁㅁㅁㅁㅁㅁㅁㅁ30ㅁㅁㅁㅁㅁㅁㅁㅁ40ㅁㅁㅁㅁㅁㅁㅁㅁ50ㅁㅁㅁㅁㅁㅁㅁㅁ60ㅁㅁㅁㅁㅁㅁㅁㅁ70ㅁㅁㅁㅁㅁㅁㅁㅁ80ㅁㅁㅁㅁㅁㅁㅁㅁ90ㅁㅁㅁㅁㅁㅁㅁㅁ400ㅁㅁㅁㅁㅁㅁㅁㅁ10ㅁㅁㅁㅁㅁㅁㅁㅁ20ㅁㅁㅁㅁㅁㅁㅁㅁ30ㅁㅁㅁㅁㅁㅁㅁㅁ40ㅁㅁㅁㅁㅁㅁㅁㅁ50ㅁㅁㅁㅁㅁㅁㅁㅁ60ㅁㅁㅁㅁㅁㅁㅁㅁ70ㅁㅁㅁㅁㅁㅁㅁㅁ80ㅁㅁㅁㅁㅁㅁㅁㅁ90ㅁㅁㅁㅁㅁㅁㅁㅁ500ㅁㅁㅁㅁㅁㅁㅁㅁ10ㅁㅁㅁㅁㅁㅁㅁㅁ20ㅁㅁㅁㅁㅁㅁㅁㅁ30ㅁㅁㅁㅁㅁㅁㅁㅁ40ㅁㅁㅁㅁㅁㅁㅁㅁ50ㅁㅁㅁㅁㅁㅁㅁㅁ60ㅁㅁㅁㅁㅁㅁㅁㅁ70ㅁㅁㅁㅁㅁㅁㅁㅁ80ㅁㅁㅁㅁㅁㅁㅁㅁ90ㅁㅁㅁㅁㅁㅁㅁㅁ600ㅁㅁㅁㅁㅁㅁㅁㅁ10ㅁㅁㅁㅁㅁㅁㅁㅁ20ㅁㅁㅁㅁㅁㅁㅁㅁ30ㅁㅁㅁㅁㅁㅁㅁㅁ40ㅁㅁㅁㅁㅁㅁㅁㅁ50ㅁㅁㅁㅁㅁㅁㅁㅁ60ㅁㅁㅁㅁㅁㅁㅁㅁ70ㅁㅁㅁㅁㅁㅁㅁㅁ80ㅁㅁㅁㅁㅁㅁㅁㅁ90ㅁㅁㅁㅁㅁㅁㅁㅁ700ㅁㅁㅁㅁㅁㅁㅁㅁ10ㅁㅁㅁㅁㅁㅁㅁㅁ20ㅁㅁㅁㅁㅁㅁㅁㅁ30ㅁㅁㅁㅁㅁㅁㅁㅁ40ㅁㅁㅁㅁㅁㅁㅁㅁ50ㅁㅁㅁㅁㅁㅁㅁㅁ60ㅁㅁㅁㅁㅁㅁㅁㅁ70ㅁㅁㅁㅁㅁㅁㅁㅁ80ㅁㅁㅁㅁㅁㅁㅁㅁ90ㅁㅁㅁㅁㅁㅁㅁㅁ800ㅁㅁㅁㅁㅁㅁㅁㅁ10ㅁㅁㅁㅁㅁㅁㅁㅁ20ㅁㅁㅁㅁㅁㅁㅁㅁ30ㅁㅁㅁㅁㅁㅁㅁㅁ40ㅁㅁㅁㅁㅁㅁㅁㅁ50ㅁㅁㅁㅁㅁㅁㅁㅁ60ㅁㅁㅁㅁㅁㅁㅁㅁ70ㅁㅁㅁㅁㅁㅁㅁㅁ80ㅁㅁㅁㅁㅁㅁㅁㅁ90ㅁㅁㅁㅁㅁㅁㅁㅁ900ㅁㅁㅁㅁㅁㅁㅁㅁ10ㅁㅁㅁㅁㅁㅁㅁㅁ20ㅁㅁㅁㅁㅁㅁㅁㅁ30ㅁㅁㅁㅁㅁㅁㅁㅁ40ㅁㅁㅁㅁㅁㅁㅁㅁ50ㅁㅁㅁㅁㅁㅁㅁㅁ60ㅁㅁㅁㅁㅁㅁㅁㅁ70ㅁㅁㅁㅁㅁㅁㅁㅁ80ㅁㅁㅁㅁㅁㅁㅁㅁ90ㅁㅁㅁㅁㅁㅁㅁㅁ1000ㅁㅁㅁㅁㅁㅁㅁㅁ10ㅁㅁㅁㅁㅁㅁㅁㅁ20ㅁㅁㅁㅁㅁㅁㅁㅁ30ㅁㅁㅁㅁㅁㅁㅁㅁ40ㅁㅁㅁㅁㅁㅁㅁㅁ50ㅁㅁㅁㅁㅁㅁㅁㅁ60ㅁㅁㅁㅁㅁㅁㅁㅁ70ㅁㅁㅁㅁㅁㅁㅁㅁ80ㅁㅁㅁㅁㅁㅁㅁㅁ90ㅁㅁㅁㅁㅁㅁㅁㅁ1100ㅁㅁㅁㅁㅁㅁㅁㅁ10ㅁㅁㅁㅁㅁㅁㅁㅁ20ㅁㅁㅁㅁㅁㅁㅁㅁ30ㅁㅁㅁㅁㅁㅁㅁㅁ40ㅁㅁㅁㅁㅁㅁㅁㅁ50ㅁㅁㅁㅁㅁㅁㅁㅁ60ㅁㅁㅁㅁㅁㅁㅁㅁ70ㅁㅁㅁㅁㅁㅁㅁㅁ80ㅁㅁㅁㅁㅁㅁㅁㅁ90ㅁㅁㅁㅁㅁㅁㅁㅁ1200ㅁㅁㅁㅁㅁㅁㅁㅁ10ㅁㅁㅁㅁㅁㅁㅁㅁ20ㅁㅁㅁㅁㅁㅁㅁㅁ30ㅁㅁㅁㅁㅁㅁㅁㅁ40ㅁㅁㅁㅁㅁㅁㅁㅁ50ㅁㅁㅁㅁㅁㅁㅁㅁ60ㅁㅁㅁㅁㅁㅁㅁㅁ70ㅁㅁㅁㅁㅁㅁㅁㅁ80ㅁㅁㅁㅁㅁㅁㅁㅁ90ㅁㅁㅁㅁㅁㅁㅁㅁ1300",
-            id: 1,
-        },
-        {
-            title: "나의 일기",
-            author: "정지원",
-            uploader: "yundol",
-            link: "https://github.com/seokkkkkk",
-            text: "ㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁ",
-            id: 2,
-        },
-        {
-            title: "나의 일기",
-            author: "정윤석",
-            uploader: "yundol",
-            link: "https://github.com/seokkkkkk",
-            text: "QWER qwer ㅂㅈㄷㄱ 1234 ₩!@#$%^&*()_+{}|\":?><.,/;'[]\\=-",
-            id: 1,
-        },
-        {
-            title: "나의 일기",
-            author: "정윤석",
-            uploader: "yundol",
-            link: "https://github.com/seokkkkkk",
-            text: "오늘은 날씨가 좋다.",
-            id: 1,
-        },
-        {
-            title: "나의 일기",
-            author: "정희경",
-            uploader: "yundol",
-            link: "https://github.com/seokkkkkk",
-            text: "오늘은 날씨가 덥다.",
-            id: 3,
-        },
-        {
-            title: "나의 일기",
-            author: "정윤석",
-            uploader: "yundol",
-            link: "https://github.com/seokkkkkk",
-            text: "오늘은 날씨가 좋다.",
-            id: 1,
-        },
-        {
-            title: "나의 일기",
-            author: "정윤석",
-            uploader: "yundol",
-            link: "https://github.com/seokkkkkk",
-            text: "오늘은 날씨가 좋다.",
-            id: 1,
-        },
-    ]);
-    const [currentText, setCurrentText] = useState(texts[0]);
+    const [texts, setTexts] = useState([]);
+    const [currentText, setCurrentText] = useState();
     const [currentTextIndex, setCurrentTextIndex] = useState(0);
     const [userData, setUserData] = useState({
         name: "yundol",
     });
+    const inputFocus = useRef();
+    const resultRef = useRef();
+    //제스처 디텍터(사운드 플레이 위함)
+    useDetect();
+    async function getTexts(retryCount = 0) {
+        if (retryCount >= 5) {
+            console.error(
+                "Maximum retry limit reached. Unable to fetch unique advice."
+            );
+            return;
+        }
+        try {
+            const response = await AdviceAPI().fetchAdvice();
+            if (response && response.length > 1) {
+                var text = {
+                    id: response[0],
+                    title: `Advice #${response[0]}`,
+                    text: response[1],
+                    author: "Advice Slip",
+                    uploader: "Advice Slip",
+                };
+                if (!texts.some((t) => t.id === text.id)) {
+                    const newTexts = [...texts, text];
+                    if (newTexts.length > 5) {
+                        newTexts.shift();
+                        setCurrentTextIndex((prevIndex) => prevIndex - 1);
+                    }
+                    setTexts(newTexts);
+                } else {
+                    getTexts(retryCount + 1); // Recursive call with incremented retry count
+                }
+            } else {
+                console.error("Unexpected response structure:", response);
+            }
+        } catch (error) {
+            console.error("Failed to fetch advice:", error);
+        }
+    }
+
+    // 첫 실행시 기본으로 5개의 텍스트를 가져옴(중복 제외)
+    useEffect(() => {
+        const loadInitialTexts = async () => {
+            setIsLoading(true); // Start loading
+            await getTexts(); // Wait for the first fetch to complete
+            setIsLoading(false); // End loading after the second fetch completes
+        };
+
+        loadInitialTexts();
+    }, []);
+
+    async function handleNewText() {
+        await getTexts();
+    }
 
     useEffect(() => {
-        setCurrentText(texts[currentTextIndex]);
+        if (texts.length > 0) {
+            setCurrentText(texts[currentTextIndex]);
+        }
     }, [currentTextIndex, texts]);
 
     useEffect(() => {
@@ -131,15 +129,18 @@ export function Main() {
     }, [resultReady, cpm, acc, err, totalTime, result, data, currentText]);
 
     useEffect(() => {
-        if (!resultReady && result.length > 5) {
+        if (!resultReady && result.length === 9) {
             setResultModal(true);
+            handleNewText();
         }
     }, [resultReady, result]);
 
     useEffect(() => {
-        let likeIds = getCookie("likeIds") || [];
-        setIsLike(likeIds.includes(currentText.id));
-    }, [currentText.id, currentTextIndex]);
+        if (currentText && currentText.id) {
+            let likeIds = getCookie("likeIds") || [];
+            setIsLike(likeIds.includes(currentText.id));
+        }
+    }, [currentText, currentTextIndex]);
 
     function handleReload() {
         setIsLoading(true);
@@ -152,6 +153,7 @@ export function Main() {
         setData([{ time: "00:00", cpm: 0, acc: 100, err: 0 }]);
         setTotalTime(null);
         setReload(true);
+        inputFocus.current.focus();
     }
 
     function handleCloseResult() {
@@ -162,6 +164,7 @@ export function Main() {
         if (texts.length > currentTextIndex + 1)
             setCurrentTextIndex(currentTextIndex + 1);
         else setOpenAlert(true);
+        inputFocus.current.focus();
     }
 
     function handleCurrentText({ indexDiff }) {
@@ -190,6 +193,10 @@ export function Main() {
         setRightMenuOpen(!rightMenuOpen);
     }
 
+    function handleBottomMenuOpen() {
+        setBottomMenuOpen(!bottomMenuOpen);
+    }
+
     function handleMenuClose() {
         if (rightMenuOpen) setRightMenuOpen(false);
         if (bottomMenuOpen) setBottomMenuOpen(false);
@@ -197,7 +204,7 @@ export function Main() {
 
     function handleLike() {
         let likeIds = getCookie("likeIds");
-        if (likeIds) {
+        if (likeIds && currentText.id) {
             if (!isLike) {
                 let newLikeIds = [...likeIds, currentText.id];
                 setCookie("likeIds", newLikeIds);
@@ -215,34 +222,31 @@ export function Main() {
 
     return (
         <MainPage>
-            <MainLogo
-                onClick={() => {
-                    handleMenuClose();
-                }}
-            >
+            {isLoading && <Loading />}
+            <MainLogo>
                 <Logo />
                 <MainHeader>Typist</MainHeader>
             </MainLogo>
-            <MainBody
-                onClick={() => {
-                    handleMenuClose();
-                }}
-            >
-                <MainMenuBar
-                    acc={acc}
-                    cpm={cpm}
-                    currentTextIndex={currentTextIndex}
-                    err={err}
-                    handleCurrentText={handleCurrentText}
-                    handleReload={handleReload}
-                    handleMenuOpen={handleRightMenuOpen}
-                    isLoading={isLoading}
-                    texts={texts}
-                    totalTime={totalTime}
-                    isLike={isLike}
-                    handleLike={handleLike}
-                />
-                {!isLoading && (
+            <MainBody>
+                {texts && (
+                    <MainMenuBar
+                        acc={acc}
+                        cpm={cpm}
+                        currentTextIndex={currentTextIndex}
+                        err={err}
+                        handleCurrentText={handleCurrentText}
+                        handleReload={handleReload}
+                        handleMenuOpen={handleRightMenuOpen}
+                        isLoading={isLoading}
+                        texts={texts}
+                        totalTime={totalTime}
+                        isLike={isLike}
+                        handleLike={handleLike}
+                        handleNewText={handleNewText}
+                        handleBottomMenuOpen={handleBottomMenuOpen}
+                    />
+                )}
+                {!isLoading && currentText && (
                     <TypingArea
                         canType={canType}
                         setCanType={setCanType}
@@ -258,11 +262,15 @@ export function Main() {
                         setResult={setResult}
                         setData={setData}
                         text={currentText.text}
+                        inputFocus={inputFocus}
                     />
                 )}
             </MainBody>
+            {(bottomMenuOpen || rightMenuOpen) && (
+                <RemainingArea onClick={() => handleMenuClose()} />
+            )}
             <Footer>
-                {!isLoading && (
+                {!isLoading && currentText && (
                     <TextInfo
                         title={currentText.title}
                         link={currentText.link}
@@ -270,15 +278,16 @@ export function Main() {
                         uploader={currentText.uploader}
                     />
                 )}
-                <List onClick={() => setBottomMenuOpen(true)} />
             </Footer>
             <RightMenu
                 userData={userData}
                 isVisible={rightMenuOpen}
                 setLoginModalOpen={setLoginModalOpen}
+                handleMenuClose={handleMenuClose}
             />
             {resultModal && (
                 <ResultModal
+                    resultRef={resultRef}
                     userData={userData}
                     data={resultData}
                     result={result}
@@ -294,6 +303,8 @@ export function Main() {
                     onSelectText={handleTextSelect}
                     currentTextIndex={currentTextIndex}
                     isVisible={bottomMenuOpen}
+                    handleNewText={handleNewText}
+                    handleMenuClose={handleMenuClose}
                 />
             }
             {openAlert && <EndOfText setOpenAlert={setOpenAlert} />}

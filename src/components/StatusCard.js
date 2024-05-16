@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const StatLabel = styled.label`
+const StatLabel = styled.span`
     font-size: 12px;
     font-weight: bold;
 `;

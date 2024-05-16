@@ -8,6 +8,7 @@ import { ReactComponent as Like } from "../assets/svg/heart.svg";
 import { ReactComponent as Liked } from "../assets/svg/heart_fill.svg";
 
 import { rotateAnimation } from "../utils/animation";
+import { ReactComponent as ListIcon } from "../assets/svg/menu-burger.svg";
 
 const MenuBar = styled.div`
     margin-right: 30px;
@@ -19,7 +20,7 @@ const MenuBar = styled.div`
 
 const MenuIcons = styled.div`
     margin-right: 10px;
-    width: 120px;
+    width: 140px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -53,10 +54,11 @@ export function MainMenuBar({
     handleReload,
     handleCurrentText,
     handleMenuOpen,
+    handleBottomMenuOpen,
     currentTextIndex,
-    texts,
     isLike,
     handleLike,
+    handleNewText,
 }) {
     return (
         <MenuBar>
@@ -89,24 +91,33 @@ export function MainMenuBar({
                 </MenuIcon>
                 <MenuIcon>
                     <Right
-                        onClick={() => handleCurrentText({ indexDiff: 1 })}
+                        onClick={() => {
+                            handleCurrentText({ indexDiff: 1 });
+                            handleNewText();
+                        }}
                         aria-label="다음 글"
                         width="15px"
                         height="20px"
-                        fill={
-                            currentTextIndex < texts.length - 1
-                                ? "gray"
-                                : "lightgray"
-                        }
+                        fill={"gray"}
                     />
                 </MenuIcon>
                 <MenuIcon>
-                    <Home
-                        onClick={() => handleMenuOpen({ bool: true })}
+                    <ListIcon
+                        onClick={() => handleBottomMenuOpen()}
                         aria-label="글 목록"
                         width="20px"
                         height="20px"
                         fill="gray"
+                    />
+                </MenuIcon>
+                <MenuIcon>
+                    <Home
+                        onClick={() => handleMenuOpen()}
+                        aria-label="메뉴 열기"
+                        width="17px"
+                        height="20px"
+                        fill="gray"
+                        style={{ marginLeft: "5px" }}
                     />
                 </MenuIcon>
             </MenuIcons>

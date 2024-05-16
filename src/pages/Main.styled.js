@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { ReactComponent as LogoIcon } from "../assets/svg/logo.svg";
-import { ReactComponent as ListIcon } from "../assets/svg/menu-burger.svg";
 
 export const MainPage = styled.div`
     position: relative;
@@ -8,14 +7,6 @@ export const MainPage = styled.div`
     flex-direction: column;
     width: 100%;
     height: 100dvh;
-`;
-
-export const List = styled(ListIcon)`
-    margin-right: 5px;
-    width: 60px;
-    height: 60px;
-    fill: gray;
-    cursor: pointer;
 `;
 
 export const MainLogo = styled.div`
@@ -35,17 +26,13 @@ export const MainBody = styled.section`
 export const Footer = styled.footer`
     position: absolute;
     bottom: 10px;
-    width: 95dvw;
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-right: 40px;
     margin-bottom: 20px;
-    @media (max-width: 390px) {
-        width: 90%;
-    }
     @media (min-width: 1001px) {
-        width: 965px;
+        width: 1001px;
     }
 `;
 
@@ -68,4 +55,12 @@ export const PageContainer = styled.div`
     position: fixed;
     height: 100%;
     width: 100%;
+`;
+
+export const RemainingArea = styled.div`
+    left: -50%;
+    width: 200%;
+    height: 100%;
+    position: absolute;
+    background-color: transparent;
 `;

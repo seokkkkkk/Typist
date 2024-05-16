@@ -64,7 +64,7 @@ export function RightMenu({ userData, isVisible, setLoginModalOpen }) {
     }
     useEffect(() => {
         calculateResult();
-    }, []);
+    }, [isVisible]);
 
     const isLogin = false;
 
