@@ -35,6 +35,11 @@ const InfoColumn = styled.div`
     align-items: center;
     justify-content: start;
     margin-bottom: 5px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 200px;
 `;
 
 function TextInfo({ title, link, author, uploader, small }) {
@@ -55,7 +60,7 @@ function TextInfo({ title, link, author, uploader, small }) {
             <InfoColumn>
                 <Author>{author}</Author>
                 <Divider />
-                <Uploader>Uploaded by {uploader}</Uploader>
+                <Uploader> {uploader}</Uploader>
             </InfoColumn>
             <hr />
         </Info>
